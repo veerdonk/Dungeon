@@ -10,6 +10,9 @@ public class PlayerManager : HitManager
 
     public Healthbar healthbar;
 
+    //TODO remove/move to other class?
+    public int curMapX = 0;
+    public int curMapY = 0;
 
     private void Start()
     {
@@ -29,4 +32,6 @@ public class PlayerManager : HitManager
             //Kill the player / game over state
         }
     }
+
+
 }

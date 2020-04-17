@@ -12,9 +12,12 @@ public class Pickup : MonoBehaviour
     public bool playerOverPickup = false;
     private Collider2D other;
 
+    private PlayerController2D pc;
+
     private void Start()
     {
         inventory = GameObject.FindGameObjectWithTag("Player").GetComponent<Inventory>();
+        pc = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController2D>();
     }
 
     private void Update()
@@ -22,6 +25,7 @@ public class Pickup : MonoBehaviour
         if (Input.GetKeyDown(Constants.PICKUP_WEAPON_KEY))
         {
             PickupItem();
+            
         }   
     }
 
@@ -29,8 +33,6 @@ public class Pickup : MonoBehaviour
     {
         playerOverPickup = true;
         other = collider;
-
-
     }
 
     private void OnTriggerExit2D(Collider2D collision)
@@ -70,10 +72,14 @@ public class Pickup : MonoBehaviour
             //TODO check slot and empty out icon
 
             inventory.weaponSlotsFull[(int)slotToAdd] = true;
+
+            
             
 
             Instantiate(itemIcon, inventory.weaponslots[(int)slotToAdd].transform, false);
 
+            //Switch to newly picked up weapon
+            pc.SwitchWeapon();
             Destroy(gameObject);
         }
     }

@@ -9,6 +9,7 @@ public class PlayerController2D : MonoBehaviour
 
     public Rigidbody2D rb;
     public Animator animator;
+    public RoomSpawner rs;
 
     public float MOVEMENT_BASE_SPEED = 1.0f;
 
@@ -42,7 +43,7 @@ public class PlayerController2D : MonoBehaviour
         movementDirection.Normalize();
         animator.SetFloat("Speed", movementDirection.sqrMagnitude);
 
-        if (Input.GetKey(KeyCode.Mouse0))
+        if (Input.GetKey(KeyCode.Mouse0) && inventory.weaponSlotsFull[0])
         {
             GetComponentInChildren<Attack>().ExecuteAttack();
         }
@@ -105,7 +106,13 @@ public class PlayerController2D : MonoBehaviour
         
     }
 
+    public void setPlayerPosition(Vector3 position)
+    {
+        rb.position = position;
+    }
+
 }
+
 
 public enum WeaponType
 {

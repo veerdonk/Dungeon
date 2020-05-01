@@ -9,6 +9,7 @@ public class EnemyAI : MonoBehaviour
     public float forceSpeed = 300f;
     public float nextWaypointDistance = 3f;
     public float followDistance = 1f;
+    public float minDistance = 0f;
 
     Path path;
     int currentWaypoint = 0;
@@ -97,12 +98,37 @@ public class EnemyAI : MonoBehaviour
 
 
         }
+        else if (Vector2.Distance(target.position, rb.position) < minDistance)
+        {
+            Vector2 direction = (transform.position - target.position).normalized;
+            Vector2 force = direction * forceSpeed * Time.deltaTime;
+            rb.AddForce(force);
+            animator.SetFloat("Speed", force.sqrMagnitude);
+
+            if(target.position.x > transform.position.x)
+            {
+                transform.localScale = new Vector3(1f, 1f, 1f);
+            }
+            else if(target.position.x < transform.position.x)
+            {
+                transform.localScale = new Vector3(-1f, 1f, 1f);
+            }
+            else if (force.x > 0)
+            {
+                transform.localScale = new Vector3(1f, 1f, 1f);
+            }
+            else if (force.x < 0)
+            {
+                transform.localScale = new Vector3(-1f, 1f, 1f);
+            }
+        }
+
         else
         {
             animator.SetFloat("Speed", 0f);
             if (GetComponent<EnemyManager>().timeSinceLastHit <= 0)
             {
-                GetComponent<Attack>().ExecuteAttack();
+                GetComponent<AbstractAttack>().Attack();
             }
         }
     }

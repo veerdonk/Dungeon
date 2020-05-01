@@ -8,7 +8,9 @@ public class EnemyManager : HitManager
 
     public LayerMask layer;
 
+    public SpriteRenderer weaponRenderer;
     public int health = 100;
+    public ParticleSystem HurtPS;
 
     Rigidbody2D rb;
 
@@ -16,15 +18,19 @@ public class EnemyManager : HitManager
     public float staggerTime = 10f;
 
     public Healthbar healthbar;
-
+    public ParticleSystem coinSplosion;
     public Transform attackPos;
 
-    PlayerManager pm;
+    public delegate void DeathDelegate(int exp, int gold, EnemyManager em);
+    public event DeathDelegate onEnemyDeath;
+
+    public Vector3 enemyGridPosition;
+
+    public EnemyType type;
 
     private void Start()
     {
         rb = gameObject.GetComponent<Rigidbody2D>();
-        pm = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerManager>();
 
         healthbar.SetMaxHealth(health);
         healthbar.SetHealth(health);
@@ -39,11 +45,11 @@ public class EnemyManager : HitManager
         //increase time till stagger wears off
         timeSinceLastHit -= Time.deltaTime;
 
-
     }
 
     public override void TakeDamage(int damage, Vector2 attackerPos, float knockBack)
     {
+        PlayHurtPS();
         healthbar.gameObject.SetActive(true);
 
         health -= damage;
@@ -54,8 +60,8 @@ public class EnemyManager : HitManager
         {
             Die();
         }
-        
-        rb.AddForceAtPosition(new Vector2((rb.position - attackerPos).normalized.x, 0) * knockBack, attackerPos);
+        //new Vector2((rb.position - attackerPos).normalized.x, 0)
+        rb.AddForceAtPosition((rb.position - attackerPos).normalized * knockBack, attackerPos);
 
         //reset time since last hit
         timeSinceLastHit = staggerTime;
@@ -70,6 +76,20 @@ public class EnemyManager : HitManager
     //TODO play death animation/effect
     private void Die()
     {
+        GameObject newWeapon = (GameObject)Instantiate(Resources.Load(Constants.PREFABS_FOLDER + Constants.PICKUPS_FOLDER + "weapon_pickup"), transform.parent.parent);
+        newWeapon.transform.position = transform.position;
+        newWeapon.GetComponent<SpriteRenderer>().sprite = weaponRenderer.sprite;
+
+        //TODO change values to actual gold/exp
+        int coinCount = 10;
+
+        onEnemyDeath.Invoke(10, coinCount, this);
+
+        ParticleSystem cs = Instantiate(coinSplosion);
+        cs.transform.position = transform.position;
+        cs.emission.SetBursts(new[] { new ParticleSystem.Burst(0, coinCount) });
+        cs.Play();
+
         Destroy(transform.parent.gameObject);
         Destroy(healthbar.gameObject);
         Destroy(gameObject);
@@ -86,4 +106,17 @@ public class EnemyManager : HitManager
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(attackPos.position, 0.8f);
     }
+
+    void PlayHurtPS()
+    {
+        ParticleSystem hurtPS = Instantiate(HurtPS);
+        hurtPS.transform.position = transform.position;
+        hurtPS.Play();
+    }
+}
+
+public enum EnemyType
+{
+    MELEE,
+    RANGED
 }

@@ -2,14 +2,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Room : MonoBehaviour
+public class Room
 {
-    public int roomX;
-    public int roomY;
+    public GameObject room;
+    public Vector3 gridPosition;
+    public bool hasNeighbours;
+    public List<string> exits = new List<string>();
+    public List<Vector3> possibleSpawnPoints;
 
-    public void setCoordinates(int x, int y)
+    public Room(GameObject room, Vector3 gridPosition)
     {
-        roomX = x;
-        roomY = y;
+        this.room = room;
+        this.gridPosition = gridPosition;
     }
 }

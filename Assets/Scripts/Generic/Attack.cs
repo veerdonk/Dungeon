@@ -3,37 +3,37 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Attack : MonoBehaviour
+public class Attack : AbstractAttack
 {
 
-    private float timeSinceAttack;
+    //private float timeSinceAttack;
 
-    Transform attackPos;
-    public LayerMask layer;
+    //Transform attackPos;
+    //public LayerMask layer;
     
-    public Animator WeaponAnimator;
-    public SpriteRenderer weaponRenderer;
+    //public Animator WeaponAnimator;
+    //public SpriteRenderer weaponRenderer;
     
     
-    Dictionary<string, object> weaponStats;
-    
+    //Dictionary<string, object> weaponStats;
+
 
     // Start is called before the first frame update
-    void Start()
-    {
-        attackPos = GetComponentInParent<Transform>();
-        UpdateWeaponStats(weaponRenderer.sprite.name);
-    }
+    //void Start()
+    //{
+    //    attackPos = GetComponentInParent<Transform>();
+    //    UpdateWeaponStats(weaponRenderer.sprite.name);
+    //}
 
-    // Update is called once per frame
-    void FixedUpdate()
-    {
+    //// Update is called once per frame
+    //void FixedUpdate()
+    //{
 
-        timeSinceAttack -= Time.deltaTime;
+    //    timeSinceAttack -= Time.deltaTime;
 
-    }
-
-    public void ExecuteAttack()
+    //}
+    
+    public override void ExecuteAttack()
     {
 
         if (timeSinceAttack <= 0)
@@ -54,9 +54,10 @@ public class Attack : MonoBehaviour
 
     }
 
-    public void UpdateWeaponStats(string weaponName)
-    {
-        weaponStats = Constants.weaponNameToStats[weaponName];
-        WeaponAnimator.speed = (float)weaponStats[Constants.PARAM_ANIM_SPEED];
-    }
+    //public void UpdateWeaponStats(string weaponName)
+    //{
+    //    weaponStats = Constants.weaponNameToStats[weaponName];
+    //    WeaponAnimator.speed = (float)weaponStats[Constants.PARAM_ANIM_SPEED];
+    //}
+
 }

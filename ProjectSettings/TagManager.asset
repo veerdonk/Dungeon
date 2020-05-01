@@ -8,6 +8,8 @@ TagManager:
   - weapon
   - Rooms
   - EntrancePoint
+  - Wall
+  - InventoryIcon
   layers:
   - Default
   - TransparentFX
@@ -20,7 +22,7 @@ TagManager:
   - Obstacle
   - Enemies
   - Player
-  - 
+  - Weapons
   - 
   - 
   - 
@@ -42,6 +44,12 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: floor
+    uniqueID: 198865083
+    locked: 0
+  - name: walls
+    uniqueID: 1251828701
+    locked: 0
   - name: Default
     uniqueID: 0
     locked: 0

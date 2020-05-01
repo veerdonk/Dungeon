@@ -12,7 +12,9 @@ public class RoomTemplates : MonoBehaviour
     void Awake()
     {
 
-        string resourcePathPrefix = Constants.PREFABS_FOLDER + Constants.ROOMS_FOLDER + Constants.ROOM_TEMPLATES_FOLDER;
+        string roomTemplateFolder = Constants.ROOM_TEMPLATES_FOLDER;
+
+        rooms = Resources.LoadAll<GameObject>(Constants.ROOM_TEMPLATES_FOLDER + Constants.ROOMS_FOLDER);
 
     }
 

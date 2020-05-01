@@ -1,26 +1,51 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+using UnityEditor.Rendering.LookDev;
 using UnityEngine;
-using UnityEngine.UI;
+using UnityEngine.EventSystems;
+using UnityEngine.Rendering;
 
 public class PlayerController2D : MonoBehaviour
 {
+    public static PlayerController2D instance;
 
     public Rigidbody2D rb;
     public Animator animator;
-    public RoomSpawner rs;
+    public ParticleSystem throwPS;
+    public ParticleSystem dustPS;
+    public ParticleSystem dashPS;
 
     public float MOVEMENT_BASE_SPEED = 1.0f;
 
     public Vector2 movementDirection;
     public float movementSpeed = 5f;
 
-    private Inventory inventory;
+    public int maxDashCharges = 3;
+    public int dashCharges = 3;
+    public float dashSpeed = 10f;
+    public float startDashTime;
+    private float dashTime = 0;
+    public float dashCooldown;
+    private float timeTillNextDash = 0f;
+    public bool isDashing;
+    private Vector2 dashDirection;
+
+    public bool dead = false;
+
+    Inventory inventory;
+
+    private void Awake()
+    {
+        if (instance != null)
+        {
+            Debug.LogWarning("Inventory is not a singleton");
+        }
+        instance = this;
+    }
 
     private void Start()
     {
-        inventory = GetComponent<Inventory>();
+        inventory = Inventory.instance;
+        dashTime = startDashTime;
     }
 
     // Update is called once per frame
@@ -31,77 +56,141 @@ public class PlayerController2D : MonoBehaviour
 
     }
 
+    private void UpdateLookDirection()
+    {
+        Vector3 newScale = transform.localScale;
+
+        Vector3 pos = new Vector3(Input.mousePosition.x, Input.mousePosition.y, 0);
+        float WorldXPos = Camera.main.ScreenToWorldPoint(pos).x;
+
+        if (WorldXPos > transform.position.x) // character it's your char game object
+        {
+            newScale.x = 1;
+        }
+        else
+        {
+            newScale.x = -1;
+        }
+
+        transform.localScale = newScale;
+    }
+
     private void FixedUpdate()
     {
-        Move();
+        if(movementDirection.magnitude > 0 && dashDirection == Vector2.zero)
+        {
+            Move();
+            
+        }
+        UpdateLookDirection();
+
+        if(dashDirection != Vector2.zero)
+        {
+            Dash();
+        }
+
     }
 
 
     void ProcessInputs()
     {
+        if (dead)
+        {
+            return;
+        }
+
         movementDirection = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
         movementDirection.Normalize();
         animator.SetFloat("Speed", movementDirection.sqrMagnitude);
 
-        if (Input.GetKey(KeyCode.Mouse0) && inventory.weaponSlotsFull[0])
+        timeTillNextDash -= Time.deltaTime;
+        if (Input.GetKeyDown(KeyCode.Space) && dashDirection == Vector2.zero && dashCharges > 0 && movementDirection.magnitude > 0)
         {
-            GetComponentInChildren<Attack>().ExecuteAttack();
+            dashCharges--;
+            UIUpdater.instance.SetDashResetIndicator();
+            StartCoroutine(Util.ExecuteAfterTime(dashCooldown, () =>
+            {
+                dashCharges++;
+            }));
+            ParticleSystem dashPSObj = Instantiate(dashPS);
+            dashPSObj.transform.position = transform.position;
+            CameraShake.instance.ShakeCamera();
+            isDashing = true;
+            timeTillNextDash = dashCooldown;
+            dashDirection = movementDirection;
         }
 
-        if (Input.GetKeyDown(Constants.SWITCH_WEAPON_KEY)){
-            //make sure we currently have a weapon
-            if (inventory.weaponSlotsFull[inventory.currentSelectedSlot])
-            {
-                SwitchWeapon();
-            }
+
+        if (Input.GetKeyDown(KeyCode.Mouse0) && transform.childCount > 4 && !IsMouseOverUI())
+        {
+            //Throw currently equipped weapon
+            GetComponentInChildren<Throw>().ExecuteThrow();
+            inventory.RemoveEquippedWeapon();
+            //Play particle effect
+            PlayThrowPS();
         }
+
+        if (Input.GetAxis("Mouse ScrollWheel") != 0f)
+        {
+            int change = 0;
+            if(Input.GetAxis("Mouse ScrollWheel") < 0)
+            {
+                change = 1;
+            }
+            else
+            {
+                change = -1;
+            }
+
+            inventory.SetSelectedSlot(change);
+        }
+
 
     }
 
-    public void SwitchWeapon()
+    private void Dash()
     {
 
-        int slotToSwitchTo = 0;
-
-        if (inventory.currentSelectedSlot == 1)
+        float tempDashSpeed = dashSpeed;
+        if(dashTime <= startDashTime / 4)
         {
-            slotToSwitchTo = 0;
-            inventory.currentSelectedSlot = 0;
+            tempDashSpeed = dashSpeed / 4;
         }
-        else if (inventory.weaponSlotsFull[1])
+        else if(dashTime <= startDashTime / 2)
         {
-            slotToSwitchTo = 1;
-            inventory.currentSelectedSlot = 1;
+            tempDashSpeed = dashSpeed / 2;
         }
+        //Check if dash is over
+        if (dashTime <= 0)
+        {
+            Debug.Log("Dash ended");
+            isDashing = false;
+            dashDirection = Vector2.zero;
+            dashTime = startDashTime;
+            //rb.velocity = Vector2.zero;
+        }
+        else
+        {
+            dashTime -= Time.deltaTime;
+            rb.MovePosition(rb.position + dashDirection * dashSpeed * MOVEMENT_BASE_SPEED * Time.deltaTime);
+        }
+        
+    }
 
-        string nameToLookup = inventory.weaponslots[slotToSwitchTo].GetComponentsInChildren<Image>()[1].sprite.name;
-        Dictionary<string, object> weaponStats = Constants.weaponNameToStats[nameToLookup];
+    private void PlayThrowPS()
+    {
+        Vector3 difference = Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position;
+        float rotZ = Mathf.Atan2(difference.y, difference.x) * Mathf.Rad2Deg;
 
-        //Get rid of previous weapon
-        Destroy(GameObject.FindGameObjectWithTag("weapon"));
-        //Instantiate new one
-        GameObject newWeapon = (GameObject)Instantiate(Resources.Load(Constants.PREFABS_FOLDER + Constants.WEAPONS_FOLDER + nameToLookup));
-        //Parent to player
-        newWeapon.transform.parent = transform;
-        //make sure its not flipped
-        newWeapon.transform.localScale = new Vector3(1f, 1f, 1f);
+        throwPS.transform.rotation = Quaternion.Euler(0f, 0f, rotZ - 45);
+        throwPS.Play();
+
     }
 
     void Move()
     {
-        Vector3 newScale = transform.localScale;
-
-        if (movementDirection.x < 0)
-        {
-            newScale.x = -1;   
-        }
-        else if( movementDirection.x > 0)
-        {
-            newScale.x = 1;
-        }
-
-        transform.localScale = newScale;
-        
+        rb.velocity = Vector2.zero;
+        CreateDust();
         rb.MovePosition(rb.position + movementDirection * movementSpeed * MOVEMENT_BASE_SPEED * Time.fixedDeltaTime);
         
     }
@@ -111,10 +200,21 @@ public class PlayerController2D : MonoBehaviour
         rb.position = position;
     }
 
+    void CreateDust()
+    {
+        dustPS.Play();
+    }
+
+    private bool IsMouseOverUI()
+    {
+        return EventSystem.current.IsPointerOverGameObject();
+    }
+
 }
 
 
 public enum WeaponType
 {
-    SWORD
+    SWORD,
+    BOW
 }

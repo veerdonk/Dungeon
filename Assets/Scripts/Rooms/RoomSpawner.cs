@@ -6,28 +6,50 @@ using System.Linq;
 
 public class RoomSpawner : MonoBehaviour
 {
-    private GameObject roomsObj;
+    public static RoomSpawner instance;
 
+    //TODO refactor tp only use Room objects
     private Dictionary<int, Dictionary<int, GameObject>> roomGrid = new Dictionary<int, Dictionary<int, GameObject>>();
     private Dictionary<int, Dictionary<int, bool>> hasNeighbours = new Dictionary<int, Dictionary<int, bool>>();
+    private Dictionary<int, Dictionary<int, List<string>>> roomExits = new Dictionary<int, Dictionary<int, List<string>>>();
+
+    private Dictionary<Vector3, Room> rooms = new Dictionary<Vector3, Room>();
+
     public int playerGridLocX = 0;
     public int playerGridLocY = 0;
 
-    private string direction = "N";
+    public Vector3 playerGridPosition;
+    public GameObject chestPrefab;
+    public GameObject weaponDropPrefab;
+
+    private string direction;
     private RoomTemplates templates;
 
     PlayerController2D playerController;
 
     List<Transform> possibleEntrances;
+    List<string> exitCodes = new List<string>{Constants.EXIT_TOP, Constants.EXIT_RIGHT, Constants.EXIT_LEFT, Constants.EXIT_BOT};
+    bool isFirstRoom = true;
 
     //TODO refactor to dictionary?
     private List<Corridor> corridors = new List<Corridor>();
+
+    Transform enemyParent;
+
+    private void Awake()
+    {
+        if(instance != null)
+        {
+            Debug.LogWarning("More than one instance of RoomSpawner present");
+        }
+        instance = this;
+    }
 
     // Start is called before the first frame update
     void Start()
     {
         //Retrieve player controller to move player with
-        playerController = GameObject.FindGameObjectWithTag(Constants.PLAYER_TAG).GetComponent<PlayerController2D>();
+        playerController = PlayerController2D.instance;
 
         //Initialize corridors
         GameObject[] corridorTemplates = Resources.LoadAll<GameObject>(Constants.CORRIDORS_FOLDER);
@@ -42,20 +64,18 @@ public class RoomSpawner : MonoBehaviour
         templates = GetComponent<RoomTemplates>();
 
         //Add first/start room 
-        addRoom(templates.rooms[0]);
+        AddRoom(templates.rooms[0]);
 
         AddExits(gameObject.transform.GetChild(0));
 
+        //Register event for roomclear
+        EnemySpawner.instance.OnAllEnemiesCleared += SpawnLoot;
+       
+    }
 
-
-        //Get the first/start room and add it to our grid
-        //roomGrid[0][0] = gameObject.transform.GetChild(0);
-
-
-        //TODO uncomment
-        //Initially spawn neighbours for start room
-        //UpdatePlayerLocationAndSpawnRoom(0, 0, "No origin direction");
-
+    public GameObject getCurrentRoom()
+    {
+        return rooms[new Vector3(playerGridLocX, playerGridLocY)].room;
     }
 
     private void AddExits(Transform room)
@@ -64,9 +84,6 @@ public class RoomSpawner : MonoBehaviour
         Tilemap floor = null;
 
         possibleEntrances = new List<Transform>();
-
-        Vector3 topLeft = new Vector3();
-        Vector3 botRight = new Vector3();
 
         //Select the floor and wall tilemaps of room
         //Also retrieve all entrance objects
@@ -95,29 +112,134 @@ public class RoomSpawner : MonoBehaviour
             }
         }
 
-        //TODO change to smart/random process
-        //select opening
+        //TODO: Check wether room to add exits to already existed and if it does
+        //Only add exits if that room has
 
-        Dictionary<int, string> test = new Dictionary<int, string>()
+        //Pass floor tilemap to function that finds possible spawn tiles/coords
+        FindPossibleSpawnPoints(floor);      
+        
+        //Get a list of possible exits - the entrance
+        List<string> tempExitCodes = exitCodes.ToList();
+        
+        int start = 0;
+        Dictionary<int, string> exitCodesToAdd = new Dictionary<int, string>();
+
+        if (direction != null){
+            tempExitCodes.Remove(Constants.opositeEntrance[direction]);
+            exitCodesToAdd.Add(0, Constants.opositeEntrance[direction]);
+            start = 1;
+        }
+
+        int numEntrances = Random.Range(1 + start, 3 + start);
+        
+        for (int i = start; i < numEntrances; i++)
+        { 
+            string code = tempExitCodes[Random.Range(0, tempExitCodes.Count)];
+            exitCodesToAdd.Add(i, code);
+            tempExitCodes.Remove(code);
+        }
+
+        
+
+        //Loop through the codes to add
+        for (int i = 0; i < exitCodesToAdd.Count; i++)
         {
-            {0,"T" },
-            {1,"L" },
-            {2,"R" },
-            {3,"B" }
-        };
-
-        for (int i = 0; i < 4; i++)
-        {
-
+            //Get the corridor with the right direction
             foreach (Corridor cor in corridors)
             {
-                if (cor.hasDirection(test[i])) {
-                    AddExit(floor, walls, cor, possibleEntrances[i]);
+                if (cor.hasDirection(exitCodesToAdd[i])) {
+                    Debug.Log($"Corridor selected for code'{exitCodesToAdd[i]}' = '{cor.name}'");
+                    //Find the matching entrance transform
+                    foreach (Transform entrance in possibleEntrances)
+                    {
+                        if(entrance.name == exitCodesToAdd[i])
+                        {
+                            bool createExit = true;
+                            
+                            //Check room in direction to see if exit should be added
+                            switch (entrance.name)
+                            {
+                                case Constants.EXIT_TOP:
+                                    //Check if room above (y+1) has bot exit
+                                    if (CheckGridLocationOffset(0, 1))
+                                    {
+                                        createExit = roomExits[playerGridLocX][playerGridLocY + 1].Contains(Constants.EXIT_BOT);
+                                    }
+                                    break;
+                                case Constants.EXIT_BOT:
+                                    //Check if room above (y-1) has bot exit
+                                    if (CheckGridLocationOffset(0, -1))
+                                    {
+                                        createExit = roomExits[playerGridLocX][playerGridLocY - 1].Contains(Constants.EXIT_TOP);
+                                    }
+                                    break;
+                                case Constants.EXIT_LEFT:
+                                    //Check if room above (y+1) has bot exit
+                                    if (CheckGridLocationOffset(-1, 0))
+                                    {
+                                        createExit = roomExits[playerGridLocX - 1][playerGridLocY].Contains(Constants.EXIT_RIGHT);
+                                    }
+                                    break;
+                                case Constants.EXIT_RIGHT:
+                                    //Check if room above (y+1) has bot exit
+                                    if (CheckGridLocationOffset(1, 0))
+                                    {
+                                        createExit = roomExits[playerGridLocX + 1][playerGridLocY].Contains(Constants.EXIT_LEFT);
+                                    }
+                                    break;
+                                default:
+                                    Debug.LogWarning("No behaviour for entrance name: " + entrance.name);
+                                    break;
+                            }
+
+                            //Only actually create exit if there is no neighbour or neighbour also has an exit there
+                            if (createExit)
+                            {
+                                //Add exit/entrance to our grid
+                                if (roomExits.ContainsKey(playerGridLocX))
+                                {
+                                    if (roomExits[playerGridLocX].ContainsKey(playerGridLocY))
+                                    {
+                                        roomExits[playerGridLocX][playerGridLocY].Add(entrance.name);
+                                    }
+                                    else
+                                    {
+                                        roomExits[playerGridLocX][playerGridLocY] = new List<string> { entrance.name };
+                                    }
+                                }
+                                else
+                                {
+                                    roomExits[playerGridLocX] = new Dictionary<int, List<string>> { { playerGridLocY, new List<string> { entrance.name } } };
+                                }
+                                //This is the entrance we want to add
+                                AddExit(floor, walls, cor, entrance);
+                            }
+                        }
+                    }
+                    
                 }
             }
 
         }
 
+    }
+
+    private bool CheckGridLocationOffset(int offsetX, int offsetY)
+    {
+        Debug.Log($"Checking X={playerGridLocX + offsetX}, Y={playerGridLocY + offsetY}");
+        return CheckGridLocationForRoom(playerGridLocX + offsetX, playerGridLocY + offsetY);
+    }
+
+    private bool CheckGridLocationForRoom(int x, int y)
+    {
+        if (roomGrid.ContainsKey(x))
+        {
+            return roomGrid[x].ContainsKey(y);
+        }
+        else
+        {
+            return false;
+        }
     }
 
     private void RemoveTile(Tilemap tm, Vector3Int position)
@@ -213,16 +335,34 @@ public class RoomSpawner : MonoBehaviour
 
     //Checks whether room exists in collection and adds if it doesnt
     //Also initializes the hasNeigbours collection
-    private GameObject addRoom(GameObject room)
+    private GameObject AddRoom(GameObject room)
     {
-
+        Debug.Log("Adding room: " + room.name);
         GameObject roomObject = Instantiate(room, gameObject.transform);
+
+
+        Vector3 gridLocVector = new Vector3(playerGridLocX, playerGridLocY);
+        Room roomToAdd = new Room(roomObject, gridLocVector);
+        if (rooms.ContainsKey(gridLocVector))
+        {
+            Debug.LogWarning("Room already exists at position: " + gridLocVector.ToString());
+
+        }
+        else
+        {
+            rooms[gridLocVector] = roomToAdd;
+        }
+
+        //Set new room as parent for enemies
+        enemyParent = roomObject.transform;
         int x = playerGridLocX;
         int y = playerGridLocY;
 
+        //roomsObj.name += $"_X{x}_Y{y}";
+
         if (roomGrid.ContainsKey(x))
         {
-            if (!roomGrid.ContainsKey(y))
+            if (!roomGrid[x].ContainsKey(y))
             {
                 //X coord exist but room doesnt
                 roomGrid[x].Add(y, roomObject);
@@ -237,6 +377,8 @@ public class RoomSpawner : MonoBehaviour
             hasNeighbours.Add(x, new Dictionary<int, bool>() { { y, false } });
             Debug.Log($"New entry ({roomObject.name}) in roomgrid added at x = {x} and y = {y}");
         }
+
+        AstarPath.active.Scan();
 
         return roomObject;
     }
@@ -262,37 +404,28 @@ public class RoomSpawner : MonoBehaviour
         roomGrid[playerGridLocX][playerGridLocY].SetActive(false);
         Vector3 newPlayerPos = new Vector3();
 
-        foreach (Transform entrance in possibleEntrances)
-        {
-            if (entrance.name.Equals(Constants.opositeEntrance[direction]))
-            {
-                newPlayerPos = entrance.position;
-            }
-        }
-
-
-       
-
         //Create new room in right direction
+        int playerXOfsset = 0;
+        int playerYOfsset = 0;
         switch (direction)
         {
             case Constants.EXIT_TOP:
                 playerGridLocY++;
-                newPlayerPos.y -= 2;
+                playerYOfsset = -2;
                 break;
 
             case Constants.EXIT_BOT:
                 playerGridLocY--;
-                newPlayerPos.y += 2;
+                playerYOfsset = 2;
                 break;
             case Constants.EXIT_RIGHT:
                 playerGridLocX++;
-                newPlayerPos.x -= 2;
+                playerXOfsset = -2;
                 break;
 
             case Constants.EXIT_LEFT:
                 playerGridLocX--;
-                newPlayerPos.x += 2;
+                playerXOfsset = 2;
                 break;
 
             default:
@@ -305,7 +438,8 @@ public class RoomSpawner : MonoBehaviour
         {
             if (!roomGrid[playerGridLocX].ContainsKey(playerGridLocY)){
                 //X exists, Y does not
-                addedRoom = addRoom(templates.rooms[Random.Range(0, templates.rooms.Length)]);
+                addedRoom = AddRoom(templates.rooms[Random.Range(0, templates.rooms.Length)]);
+                AddExits(addedRoom.transform);
             }
             else
             {
@@ -317,19 +451,179 @@ public class RoomSpawner : MonoBehaviour
         else
         {
             //X/Y do not exist
-            addedRoom = addRoom(templates.rooms[Random.Range(0, templates.rooms.Length)]);
+            addedRoom = AddRoom(templates.rooms[Random.Range(0, templates.rooms.Length)]);
+            AddExits(addedRoom.transform);
         }
-        
+
+        foreach (Transform entrance in possibleEntrances)
+        {
+            if (entrance.name == Constants.opositeEntrance[direction])
+            {
+                newPlayerPos = entrance.position;
+                break;
+            }
+        }
+
+        newPlayerPos.x += playerXOfsset;
+        newPlayerPos.y += playerYOfsset;
+
         //Set player to right spot
         playerController.setPlayerPosition(newPlayerPos);
-        AddExits(addedRoom.transform);
+
+        //Once all exits have been added rescan the A* pathfinding
+        AstarPath.active.Scan();
+    }
+
+    //Used to determine viable spawnpoints
+    public void FindPossibleSpawnPoints(Tilemap floor)
+    {
+        List<Vector3> allowedSpawnPoints = new List<Vector3>();
+
+        //Look at floor tilemap
+        BoundsInt floorBounds = floor.cellBounds;
+        TileBase[] allFloorTiles = floor.GetTilesBlock(floorBounds);
+
+        Debug.Log("Finding all possible spawnlocations for tilemap: " + floor.name);
+        //Loop through all floor positions
+        foreach (var pos in floor.cellBounds.allPositionsWithin)
+        {
+            //Only check positions that actually have a tile
+            if (floor.HasTile(pos))
+            {
+                
+                bool isMissingNeighbours = false;
+
+                //Check all neighbours of tile
+                //    X       Y
+                //-1, 0, 1  1,1,1
+                //-1, 0, 1  0,0,0
+                //-1, 0, 1  -1-1-1
+                for (int lx = -1; lx < 2; lx++)
+                {
+                    for (int ly = -1; ly < 2; ly++)
+                    {
+                        Vector3Int newPos = pos;
+                        newPos.x += lx;
+                        newPos.y += ly;
+                        //Check if neibour is null
+                        if (!floor.HasTile(newPos))
+                        {
+                            isMissingNeighbours = true;
+                        }
+                    }
+                }
+                //If no neighbours were missing add tile coordinates to list of allowed spawn points
+                if (!isMissingNeighbours)
+                {
+                    allowedSpawnPoints.Add(pos);
+                }
+            }
+
+
+        }
+        rooms[new Vector3(playerGridLocX, playerGridLocY)].possibleSpawnPoints = allowedSpawnPoints;
+
+        if (isFirstRoom)
+        {
+            //Spawn some a chest w/ weapons to start with
+            SpawnLoot();
+            isFirstRoom = false;
+        }
+        else
+        {
+            //Once positions are known instruct enemyspawner to instantiate enemies
+            EnemySpawner.instance.SpawnEnemies(allowedSpawnPoints, enemyParent, new Vector3(playerGridLocX, playerGridLocY, 0));
+        }
+
+
+    }
+
+    public List<Vector3> FindLocationsNearPoint(Vector3 point, int numPoints)
+    {
+        //open spawnlocations of room
+        List<Vector3> allSpawnPoints = rooms[new Vector3(playerGridLocX, playerGridLocY)].possibleSpawnPoints.ToList();
+        //If spawnlocations contains our starting point -> remove it
+        if (allSpawnPoints.Contains(point)) 
+        {
+            allSpawnPoints.Remove(point);
+        }
+        List<Vector3> closePoints = new List<Vector3>();
+
+
+
+        for (int i = 0; i < numPoints; i++)
+        {
+            Vector3 closestVec =  new Vector3();
+            float minDist = Mathf.Infinity;
+            foreach (Vector3 spawnLoc in allSpawnPoints)
+            {
+                float dist = Vector3.Distance(spawnLoc, point);
+                if (dist < minDist)
+                {
+                    closestVec = spawnLoc;
+                    minDist = dist;
+                }
+            }
+            closePoints.Add(closestVec);
+            allSpawnPoints.Remove(closestVec);
+        }
+
+        Debug.Log($"Close points to '{point}' are:");
+        foreach (Vector3 vec in closePoints)
+        {
+            Debug.Log(vec);
+        }
+
+        return closePoints;
+    }
+
+    //Spawn loot on a random available location in the room
+    private void SpawnLoot()
+    {
+
+        //Select random location for loot/chest
+        Vector3 lootPoint = rooms[new Vector3(playerGridLocX, playerGridLocY)].possibleSpawnPoints[Random.Range(0, rooms[new Vector3(playerGridLocX, playerGridLocY)].possibleSpawnPoints.Count)];
+        Debug.Log("Spawning loot at position: " + lootPoint.ToString());
+        if (isFirstRoom)
+        {
+            List<string> itemNames = new List<string>();
+            //Player starts out with 3 green items
+            for (int i = 0; i < 3; i++)
+            {
+                itemNames.Add(Constants.itemLootTable[Rarity.GREEN][Random.Range(0, Constants.itemLootTable[Rarity.GREEN].Count)]);
+            }
+
+            SpawnItemChest(itemNames, lootPoint);
+        }
+        else
+        {
+
+            //Chance for items or coins
+            //Chance to select different items
+
+            SpawnCoinChest(Random.Range(15, 40), lootPoint);
+
+        }
         
     }
 
+    private void SpawnCoinChest(int amount, Vector3 position)
+    {
+        GameObject chestObj = Instantiate(chestPrefab, rooms[new Vector3(playerGridLocX, playerGridLocY)].room.transform);
+        Chest chest = chestObj.GetComponentInChildren<Chest>();
+        chestObj.transform.position = position;
+        chest.type = ChestType.COIN;
+        chest.coinCount = amount;
+    }
 
-
-
-
+    private void SpawnItemChest(List<string> itemNames, Vector3 position)
+    {
+        GameObject chestObj = Instantiate(chestPrefab, rooms[new Vector3(playerGridLocX, playerGridLocY)].room.transform);
+        chestObj.transform.position = position;
+        Chest chest = chestObj.GetComponentInChildren<Chest>();
+        chest.type = ChestType.ITEM;
+        chest.items = itemNames;
+    }
 
 }
 

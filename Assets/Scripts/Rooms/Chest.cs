@@ -12,7 +12,7 @@ public class Chest : MonoBehaviour
     public Animator animator;
     public GameObject weaponPickupPrefab;
 
-    public List<string> items;
+    public List<Item> items;
 
     bool isClosed = true;
     public int coinCount = 30;
@@ -76,7 +76,8 @@ public class Chest : MonoBehaviour
                                 lootEffect.Play();
 
                                 GameObject spawnedLoot = Instantiate(weaponPickupPrefab, RoomSpawner.instance.getCurrentRoom().transform);
-                                spawnedLoot.GetComponent<SpriteRenderer>().sprite = Constants.items[items[i]].sprite;
+                                spawnedLoot.GetComponent<Pickup>().item = items[i];
+                                //spawnedLoot.GetComponent<SpriteRenderer>().sprite = items[i].sprite;
                                 spawnedLoot.transform.position = lootLocations[i];
                                 spawnedLoot.SetActive(false);
                                 spawnedItems.Add(spawnedLoot);

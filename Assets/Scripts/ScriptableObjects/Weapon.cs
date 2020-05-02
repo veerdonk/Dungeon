@@ -3,12 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "New Weapon", menuName = "Weapon")]
-public class Weapon : ScriptableObject
+public class Weapon : Item
 {
-    public string id;
-    public new string name;
-    public string description;
-    public Sprite sprite;
     public WeaponType type;
     public int damage;
     public float range = 5f;

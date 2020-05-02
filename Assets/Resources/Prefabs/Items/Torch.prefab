@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 142262701853166638}
   - component: {fileID: 142262701853166633}
   m_Layer: 0
-  m_Name: torch
+  m_Name: Torch
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -169,6 +169,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 791078584817074347, guid: d9e3c0c391b140648a7e3acc2271f072,
+        type: 3}
+      propertyPath: m_ApplyToSortingLayers.Array.size
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 791078584817074347, guid: d9e3c0c391b140648a7e3acc2271f072,
+        type: 3}
+      propertyPath: m_ApplyToSortingLayers.Array.data[3]
+      value: -755339861
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d9e3c0c391b140648a7e3acc2271f072, type: 3}

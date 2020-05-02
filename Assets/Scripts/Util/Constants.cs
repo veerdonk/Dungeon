@@ -17,7 +17,6 @@ public class Constants
     public const string ROOM_TEMPLATES_FOLDER = PREFABS_FOLDER + ROOMS_FOLDER + "Room_templates/";
     public const string CORRIDORS_FOLDER =  ROOM_TEMPLATES_FOLDER + "Corridors/";
 
-
     //Controls
     public const KeyCode SWITCH_WEAPON_KEY = KeyCode.Q;
     public const KeyCode PICKUP_WEAPON_KEY = KeyCode.R;
@@ -62,65 +61,4 @@ public class Constants
     public const string PARAM_ROTATION_SPEED= "rotation_speed";
     public const string PARAM_THROW_SPEED= "throw_speed";
 
-    //damage            -> only whole numbers (is cast to int)
-    //Range             -> Size of scanning circle
-    //knockback         -> How far to knock enemy back (300+)
-    //delay             -> Minimum delay between attacks (seconds)
-    //animation_speed   -> Speed for animation (1 = normal speed, 0.5 half speed, 2 double speed)
-    public static Dictionary<string, Dictionary<string, object>> weaponNameToStats = new Dictionary<string, Dictionary<string, object>>()
-    {
-        { "weapon_rusty_sword", new Dictionary<string, object>(){ 
-            { "weapon_type",  WeaponType.SWORD }, 
-            { "damage", 15 }, 
-            { "range", 0.7f} , 
-            { "knockback", 400f }, 
-            { "delay", 0.3f }, 
-            { "animation_speed", 1.2f }, 
-            { "rotation_speed", 20f },
-            { "throw_speed", 15f} } },
-        { "weapon_cleaver", new Dictionary<string, object>(){ 
-            { "weapon_type", WeaponType.SWORD }, 
-            { "damage", 25 }, 
-            { "range", 0.8f} , 
-            { "knockback", 600f }, 
-            { "delay", 0.5f }, 
-            { "animation_speed", 0.8f }, 
-            { "rotation_speed", 20f },
-            { "throw_speed", 15f}} },
-        { "bow0000", new Dictionary<string, object>(){
-            { "weapon_type", WeaponType.BOW },
-            { "damage", 10 },
-            { "range", 5f} ,
-            { "knockback", 50f },
-            { "delay", 0.3f },
-            { "animation_speed", 1f },
-            { "rotation_speed", 20f },
-            { "throw_speed", 15f}} }
-    };
-
-    public static Dictionary<string, Item> items = new Dictionary<string, Item>()
-    {
-        {"weapon_rusty_sword", new Item("weapon_rusty_sword", "Rusty sword", "An old and rusted blade", ItemType.WEAPON, Resources.Load<Sprite>(WEAPONS_FOLDER_FULL + "weapon_rusty_sword"))},
-        {"weapon_cleaver", new Item("weapon_cleaver", "Meat cleaver", "A butchers cleaver", ItemType.WEAPON, Resources.Load<Sprite>(WEAPONS_FOLDER_FULL + "weapon_cleaver"))}
-    };
-
-
-    public static Dictionary<Rarity, List<string>> itemLootTable = new Dictionary<Rarity, List<string>>()
-    {
-        { Rarity.WHITE, new List<string>{
-            "weapon_rusty_sword"
-        } },
-
-        { Rarity.GREEN, new List<string>{
-            "weapon_cleaver"
-        } }
-    };
-
-
-}
-
-public enum Rarity
-{
-    WHITE,
-    GREEN
 }

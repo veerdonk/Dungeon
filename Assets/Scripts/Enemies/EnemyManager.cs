@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class EnemyManager : HitManager
 {
-
+    public AbstractAttack AAttack;
     public LayerMask layer;
 
     public SpriteRenderer weaponRenderer;
@@ -31,7 +31,7 @@ public class EnemyManager : HitManager
     private void Start()
     {
         rb = gameObject.GetComponent<Rigidbody2D>();
-
+        weaponRenderer.sprite = AAttack.weapon.sprite;
         healthbar.SetMaxHealth(health);
         healthbar.SetHealth(health);
 
@@ -78,7 +78,7 @@ public class EnemyManager : HitManager
     {
         GameObject newWeapon = (GameObject)Instantiate(Resources.Load(Constants.PREFABS_FOLDER + Constants.PICKUPS_FOLDER + "weapon_pickup"), transform.parent.parent);
         newWeapon.transform.position = transform.position;
-        newWeapon.GetComponent<SpriteRenderer>().sprite = weaponRenderer.sprite;
+        newWeapon.GetComponent<Pickup>().item = AAttack.weapon;
 
         //TODO change values to actual gold/exp
         int coinCount = 10;
@@ -90,7 +90,7 @@ public class EnemyManager : HitManager
         cs.emission.SetBursts(new[] { new ParticleSystem.Burst(0, coinCount) });
         cs.Play();
 
-        Destroy(transform.parent.gameObject);
+        Destroy(transform.gameObject);
         Destroy(healthbar.gameObject);
         Destroy(gameObject);
     }

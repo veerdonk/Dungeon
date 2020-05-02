@@ -344,6 +344,7 @@ MonoBehaviour:
   forceSpeed: 350
   nextWaypointDistance: 1
   followDistance: 1
+  minDistance: 0
 --- !u!50 &1470271534782339952
 Rigidbody2D:
   serializedVersion: 4
@@ -377,6 +378,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a929c2ac2a965b4e8c059bc13142e56, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  AAttack: {fileID: 1470271534782339851}
   layer:
     serializedVersion: 2
     m_Bits: 1024
@@ -403,6 +405,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c8d076a9ee26c594eacda2454ab16b63, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  weapon: {fileID: 0}
   timeSinceAttack: 0
   attackPos: {fileID: 1470271534083943219}
   layer:

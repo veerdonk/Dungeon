@@ -2,46 +2,22 @@
 using System.Net.Http.Headers;
 using UnityEngine;
 
-public class Item
+//[CreateAssetMenu(fileName = "New Item", menuName = "Item")]
+public abstract class Item : ScriptableObject
 {
-
-    public string id { get; set; }
-    public Guid uuid { get; set; }
-    public string name { get; set; }
-    public string description { get; set; }
-    public ItemType itemType { get; set; }
-    public Sprite sprite { get; set; }
-
-    public Item(string id, string name, string description, ItemType itemType, Sprite sprite)
-    {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.itemType = itemType;
-        this.sprite = sprite;
-        this.uuid = Guid.NewGuid();
-    }
-
-    //What behaviour should be when item is 'used'
-    //TODO add context? -> shops
-    public void Use()
-    {
-        switch (itemType)
-        {
-            case ItemType.WEAPON:
-                //Swap to weapon hotbar
-                
-                break;
-            case ItemType.POTION:
-                //Consume
-                break;
-            case ItemType.MATERIAL:
-                //?
-                break;
-            default:
-                break;
-        }
-    }
+    [SerializeField]
+    public string id;
+    [SerializeField]
+    public Guid uuid = new Guid();
+    [SerializeField]
+    public new string name;
+    [SerializeField]
+    public string description;
+    [SerializeField]
+    public ItemType itemType;
+    [SerializeField]
+    public Sprite sprite;
+    public Rarity rarity;
 
     public override string ToString()
     {
@@ -58,7 +34,7 @@ public class Item
             return false;
         }
 
-        return this.uuid == item.uuid;
+        return this.uuid == item.uuid && this.name == item.name && this.id == item.id;
       
     }
 
@@ -73,4 +49,10 @@ public enum ItemType
     WEAPON,
     POTION,
     MATERIAL
+}
+
+public enum Rarity
+{
+    WHITE,
+    GREEN
 }

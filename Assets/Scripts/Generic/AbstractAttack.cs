@@ -4,7 +4,7 @@ using UnityEngine;
 
 public abstract class AbstractAttack : MonoBehaviour
 {
-
+    public Weapon weapon;
     public float timeSinceAttack;
 
     public Transform attackPos;
@@ -13,27 +13,16 @@ public abstract class AbstractAttack : MonoBehaviour
     public Animator WeaponAnimator;
     public SpriteRenderer weaponRenderer;
 
-
-    public Dictionary<string, object> weaponStats;
-
-
     // Start is called before the first frame update
     void Start()
     {
         attackPos = GetComponentInParent<Transform>();
-        UpdateWeaponStats(weaponRenderer.sprite.name);
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
         timeSinceAttack -= Time.deltaTime;
-    }
-
-    public void UpdateWeaponStats(string weaponName)
-    {
-        weaponStats = Constants.weaponNameToStats[weaponName];
-        WeaponAnimator.speed = (float)weaponStats[Constants.PARAM_ANIM_SPEED];
     }
 
     public void Attack()

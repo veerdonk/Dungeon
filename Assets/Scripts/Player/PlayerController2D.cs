@@ -28,6 +28,7 @@ public class PlayerController2D : MonoBehaviour
     private float timeTillNextDash = 0f;
     public bool isDashing;
     private Vector2 dashDirection;
+    private int childCountMinusWeapon;
 
     public bool dead = false;
 
@@ -46,6 +47,7 @@ public class PlayerController2D : MonoBehaviour
     {
         inventory = Inventory.instance;
         dashTime = startDashTime;
+        childCountMinusWeapon = transform.childCount;
     }
 
     // Update is called once per frame
@@ -121,7 +123,7 @@ public class PlayerController2D : MonoBehaviour
         }
 
 
-        if (Input.GetKeyDown(KeyCode.Mouse0) && transform.childCount > 4 && !IsMouseOverUI())
+        if (Input.GetKeyDown(KeyCode.Mouse0) && transform.childCount > childCountMinusWeapon && !IsMouseOverUI())
         {
             //Throw currently equipped weapon
             GetComponentInChildren<Throw>().ExecuteThrow();

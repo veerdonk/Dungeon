@@ -15,6 +15,11 @@ public class Inventory : MonoBehaviour
     public Item[] inventoryItemPositions = new Item[numInvSlots];
     public Item[] hotbarItemPositions = new Item[numHotbarSlots];
 
+    public Item[] allItemObjects;
+    public List<Item> whiteItems;
+    public List<Item> greenItems;
+
+
     public int selectedSlot = 0;
 
     public const int numInvSlots = 30;
@@ -47,7 +52,25 @@ public class Inventory : MonoBehaviour
         {
             hotbarItemPositions[i] = null;
         }
+        allItemObjects = Resources.LoadAll<Item>("Weapons/");
+    }
 
+    private void Start()
+    {
+        foreach (Item item in allItemObjects)
+        {
+            switch (item.rarity)
+            {
+                case Rarity.WHITE:
+                    whiteItems.Add(item);
+                    break;
+                case Rarity.GREEN:
+                    greenItems.Add(item);
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 
     public bool HotbarContainsItem()

@@ -586,14 +586,15 @@ public class RoomSpawner : MonoBehaviour
         Debug.Log("Spawning loot at position: " + lootPoint.ToString());
         if (isFirstRoom)
         {
-            List<string> itemNames = new List<string>();
+            List<Item> items = new List<Item>();
             //Player starts out with 3 green items
             for (int i = 0; i < 3; i++)
             {
-                itemNames.Add(Constants.itemLootTable[Rarity.GREEN][Random.Range(0, Constants.itemLootTable[Rarity.GREEN].Count)]);
+
+                items.Add(Inventory.instance.greenItems[Random.Range(0, Inventory.instance.greenItems.Count)]);
             }
 
-            SpawnItemChest(itemNames, lootPoint);
+            SpawnItemChest(items, lootPoint);
         }
         else
         {
@@ -616,7 +617,7 @@ public class RoomSpawner : MonoBehaviour
         chest.coinCount = amount;
     }
 
-    private void SpawnItemChest(List<string> itemNames, Vector3 position)
+    private void SpawnItemChest(List<Item> itemNames, Vector3 position)
     {
         GameObject chestObj = Instantiate(chestPrefab, rooms[new Vector3(playerGridLocX, playerGridLocY)].room.transform);
         chestObj.transform.position = position;

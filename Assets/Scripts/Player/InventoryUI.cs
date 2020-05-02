@@ -9,6 +9,7 @@ public class InventoryUI : MonoBehaviour
     public Transform weaponPanel;
     Inventory inventory;
     public GameObject currentEquippedWeapon;
+    public GameObject weaponPrefab;
 
     // Start is called before the first frame update
     void Start()
@@ -72,15 +73,17 @@ public class InventoryUI : MonoBehaviour
         {
             if (currentEquippedWeapon == null || currentEquippedWeapon.GetComponent<Throw>().isThrown)
             {
-                currentEquippedWeapon = (GameObject)Instantiate(Resources.Load(Constants.PREFABS_FOLDER + Constants.WEAPONS_FOLDER + "weapon"), GameObject.FindGameObjectWithTag(Constants.PLAYER_TAG).transform);
-                currentEquippedWeapon.GetComponentInChildren<SpriteRenderer>().sprite = hotbarSlots[inventory.selectedSlot].item.sprite;
+                currentEquippedWeapon = Instantiate(weaponPrefab, GameObject.FindGameObjectWithTag(Constants.PLAYER_TAG).transform);
+                currentEquippedWeapon.GetComponent<Throw>().weapon = (Weapon)hotbarSlots[inventory.selectedSlot].item;
+                //currentEquippedWeapon.GetComponentInChildren<SpriteRenderer>().sprite = hotbarSlots[inventory.selectedSlot].item.sprite;
             }
             else
             {
                 //TODO refactor to get rid of code duplication
                 Destroy(currentEquippedWeapon);
-                currentEquippedWeapon = (GameObject)Instantiate(Resources.Load(Constants.PREFABS_FOLDER + Constants.WEAPONS_FOLDER + "weapon"), GameObject.FindGameObjectWithTag(Constants.PLAYER_TAG).transform);
-                currentEquippedWeapon.GetComponentInChildren<SpriteRenderer>().sprite = hotbarSlots[inventory.selectedSlot].item.sprite;
+                currentEquippedWeapon = (GameObject)Instantiate(weaponPrefab, GameObject.FindGameObjectWithTag(Constants.PLAYER_TAG).transform);
+                currentEquippedWeapon.GetComponent<Throw>().weapon = (Weapon)hotbarSlots[inventory.selectedSlot].item;
+                //currentEquippedWeapon.GetComponentInChildren<SpriteRenderer>().sprite = hotbarSlots[inventory.selectedSlot].item.sprite;
             }
         }
         //no item in hotbar left but the player still has a version equipped!

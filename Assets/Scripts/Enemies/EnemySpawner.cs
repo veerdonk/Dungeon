@@ -6,9 +6,7 @@ public class EnemySpawner : MonoBehaviour
 {
     public static EnemySpawner instance;
     public GameObject enemyPrefab;
-
-    //TODO: Increase/Decrease by some manner
-    int numberOfEnemiesToSpawn = 3;
+    public GameObject rangedEnemyPrefab;
 
     Dictionary<Vector3, List<EnemyManager>> enemies = new Dictionary<Vector3, List<EnemyManager>>();
 
@@ -25,20 +23,46 @@ public class EnemySpawner : MonoBehaviour
     }
 
     public void SpawnEnemies(List<Vector3> possiblePositions, Transform parent, Vector3 gridPosition)
-    { 
-        
+    {
+        //TODO: Increase/Decrease by some manner
+        int numberOfEnemiesToSpawn = 3 + PlayerManager.instance.playerLevel;
+
+        //TODO select enemytype/weapontype
         Debug.Log($"Spawning {numberOfEnemiesToSpawn} enemies");
 
         for (int i = 0; i < numberOfEnemiesToSpawn + Random.Range(-1, 2); i++)
         {
-            //TODO: make sure enemies are parented correctly
-            //TODO: Between room permanence -> dead enemies should stay dead
+            //Choose what rarity weapon the enemy will have
+            //0-70 = white, 70-90 = green 90-100 = epic
+            int chance = Random.Range(0, 100);
+            Weapon enemyWeapon;
+            if(chance < 70)
+            {
+                enemyWeapon = (Weapon)Inventory.instance.whiteItems[Random.Range(0, Inventory.instance.whiteItems.Count)];
+            }
+            else{
+                enemyWeapon = (Weapon)Inventory.instance.greenItems[Random.Range(0, Inventory.instance.greenItems.Count)];
+            }
+            //TODO add epic items here
+            GameObject newEnemy = null;
+            switch (enemyWeapon.type)
+            {
+                case WeaponType.BOW:
+                    newEnemy = Instantiate(rangedEnemyPrefab, parent);
+                    break;
+                case WeaponType.SWORD:
+                    newEnemy = Instantiate(enemyPrefab, parent);
+                    break;
+                default:
+                    break;
+            }
+
             Vector3 pos = possiblePositions[Random.Range(0, possiblePositions.Count)];
-            GameObject newEnemy = Instantiate(enemyPrefab, parent);
+             
             newEnemy.transform.position = pos;
             //Set the enemies grid position
             EnemyManager em = newEnemy.GetComponentInChildren<EnemyManager>();
-
+            newEnemy.GetComponentInChildren<AbstractAttack>().weapon = enemyWeapon;
             if (enemies.ContainsKey(gridPosition)){
                 enemies[gridPosition].Add(em);
             }

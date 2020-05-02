@@ -28,13 +28,7 @@ public class Throw : MonoBehaviour
     void Start()
     {
         weaponRenderer.sprite = weapon.sprite;
-        UpdateWeaponStats(weaponRenderer.sprite.name);
-    }
-    public void UpdateWeaponStats(string weaponName)
-    {
-        weaponStats = Constants.weaponNameToStats[weaponName];
-        //WeaponAnimator.speed = (float)weaponStats[Constants.PARAM_ANIM_SPEED];
-        WeaponAnimator.speed = weapon.animationSpeed;
+        //UpdateWeaponStats(weaponRenderer.sprite.name);
     }
 
     // Update is called once per frame

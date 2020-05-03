@@ -1,8 +1,5 @@
-﻿using System;
-using UnityEditor.Rendering.LookDev;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.Rendering;
 
 public class PlayerController2D : MonoBehaviour
 {

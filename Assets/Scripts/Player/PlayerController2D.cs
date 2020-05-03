@@ -114,15 +114,18 @@ public class PlayerController2D : MonoBehaviour
                 dashCharges++;
             }));
 
-            ParticleSystem arrowParticles = Instantiate(arrowPS);
-            arrowParticles.emission.SetBursts(new[] { new ParticleSystem.Burst(0, arrowContainer.transform.childCount) });
-            arrowParticles.transform.position = transform.position;
-            arrowParticles.Play();
-            
+            if (arrowContainer.transform.childCount > 0) {
+                ParticleSystem arrowParticles = Instantiate(arrowPS);
+                arrowParticles.textureSheetAnimation.SetSprite(0, arrowContainer.transform.GetChild(0).GetComponent<SpriteRenderer>().sprite);
+                arrowParticles.emission.SetBursts(new[] { new ParticleSystem.Burst(0, arrowContainer.transform.childCount) });
+                arrowParticles.transform.position = transform.position;
+                arrowParticles.Play();
 
-            foreach (Transform child in arrowContainer.transform)
-            {
-                Destroy(child.gameObject);
+
+                foreach (Transform child in arrowContainer.transform)
+                {
+                    Destroy(child.gameObject);
+                }
             }
             ParticleSystem dashPSObj = Instantiate(dashPS);
             dashPSObj.transform.position = transform.position;

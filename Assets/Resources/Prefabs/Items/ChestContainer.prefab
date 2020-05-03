@@ -9738,8 +9738,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -755339861
+  m_SortingLayer: -2
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: fabc4a4b2d871c54b9621c8cc4017ac0, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -9791,10 +9791,10 @@ MonoBehaviour:
   weaponPickupPrefab: {fileID: 9077179878341303442, guid: 0901fd0188fe1bb48be79e1f096ae2dc,
     type: 3}
   items:
-  - 
-  - 
-  - 
-  - 
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   coinCount: 30
 --- !u!50 &2582778698104763792
 Rigidbody2D:

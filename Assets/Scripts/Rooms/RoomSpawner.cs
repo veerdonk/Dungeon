@@ -58,6 +58,7 @@ public class RoomSpawner : MonoBehaviour
             corridors.Add(new Corridor(corr));
         }
 
+
         Debug.Log("Spawning corridors");
 
         //Possible room templates
@@ -97,10 +98,12 @@ public class RoomSpawner : MonoBehaviour
                     if (tilemapTransform.name == Constants.TILEMAP_FLOOR_NAME)
                     {
                         floor = tilemapTransform.GetComponent<Tilemap>();
+                        
                     }
                     else if (tilemapTransform.name == Constants.TILEMAP_WALLS_NAME)
                     {
                         walls = tilemapTransform.GetComponent<Tilemap>();
+
                     }
                 }
             }
@@ -253,13 +256,8 @@ public class RoomSpawner : MonoBehaviour
 
         //Get position of entrance
         Vector3Int initialPosition = floor.WorldToCell(entranceToAdd.position);
-
-        //Debug.Log($"Entrance to add x= {entranceToAdd.position.x}\ncorridorWallBounds x= {corridor.wallBounds.x}" +
-        //    $"\ncorridorWallBounds.min = {corridor.wallBounds.min}" +
-        //    $"\ncorridorWallBounds.max = {corridor.wallBounds.max}" +
-        //    $"\ncorridorWallBounds.position = {corridor.wallBounds.position}" +
-        //    $"\ncorridorWallBounds.size = {corridor.wallBounds.size}");
-
+        Vector3 triggerPosition = new Vector3();
+        
 
         //Set position of new corridor
         Vector3Int newPositionWall = new Vector3Int();
@@ -267,9 +265,10 @@ public class RoomSpawner : MonoBehaviour
         switch (entranceToAdd.name)
         {
             case Constants.EXIT_LEFT:
-                //substract twice the distance of the center to the left most point
-                newPositionWall.x = initialPosition.x + corridor.wallBounds.xMin * 2;
-                newPositionFloor.x = initialPosition.x + corridor.floorBounds.xMin * 2;
+                //For this to work the 'opening'of the entrance has to be -exactly- on X=0
+                newPositionWall.x = initialPosition.x + corridor.wallBounds.xMin;
+                newPositionFloor.x = initialPosition.x + corridor.floorBounds.xMin;
+                Debug.Log(newPositionWall);
                 // 0 > 0?
                 newPositionWall.y = initialPosition.y + corridor.wallBounds.yMin;
                 newPositionFloor.y = initialPosition.y + corridor.floorBounds.yMin;
@@ -309,8 +308,9 @@ public class RoomSpawner : MonoBehaviour
                 newPositionWall.x = initialPosition.x + corridor.wallBounds.xMin;
                 newPositionFloor.x = initialPosition.x + corridor.floorBounds.xMin;
                 //set Y
-                newPositionWall.y = initialPosition.y + corridor.wallBounds.yMin * 2 - 1;
-                newPositionFloor.y = initialPosition.y + corridor.floorBounds.yMin * 2 - 1;
+                //For this to work the 'opening' of the corridor has to be at -exaclty- Y=0
+                newPositionWall.y = initialPosition.y + corridor.wallBounds.yMin - 1;
+                newPositionFloor.y = initialPosition.y + corridor.floorBounds.yMin - 1;
 
                 break;
 
@@ -330,7 +330,7 @@ public class RoomSpawner : MonoBehaviour
 
         //Add the corridor trigger
         GameObject corTrigger = Instantiate(corridor.trigger, roomGrid[playerGridLocX][playerGridLocY].transform);
-        corTrigger.transform.position = floorBounds.center +  corridor.trigger.transform.position;
+        corTrigger.transform.position = initialPosition + corridor.trigger.transform.position;//floorBounds.center +  corridor.trigger.transform.position;
 
     }
 

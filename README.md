@@ -1,5 +1,5 @@
 # Dungeon
-## Version 0.1 Alpha ready
+## Version 0.1.2 Alpha ready
 ### New Features
 - 5 different rooms
 - 4 different weapons
@@ -22,3 +22,4 @@
 - Clear a room to spawn loot
 
 ### Download
+[Download V0.1.2  here](https://github.com/veerdonk/Dungeon/blob/master/Builds/ALPHA_0.1.2.rar)

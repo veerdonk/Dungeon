@@ -9752,15 +9752,17 @@ MonoBehaviour:
   animator: {fileID: 8764235404458630016}
   throwPS: {fileID: 6767786955211861150}
   dustPS: {fileID: 3378881485013366349}
-  dashPS: {fileID: 0}
+  dashPS: {fileID: 1018507347949976294, guid: d71c7422c0174bb42a378e8658691c04, type: 3}
+  arrowPS: {fileID: 8079055391729727242, guid: 2bf3c89e2a268664a9299d8370326af0, type: 3}
   MOVEMENT_BASE_SPEED: 1
   movementDirection: {x: 0, y: 0}
   movementSpeed: 5
+  arrowContainer: {fileID: 3220089807567070472}
   maxDashCharges: 3
-  dashCharges: 3
+  dashCharges: 2
   dashSpeed: 15
-  startDashTime: 0.2
-  dashCooldown: 0.7
+  startDashTime: 0.3
+  dashCooldown: 2
   isDashing: 0
   dead: 0
 --- !u!50 &8764235404458630078
@@ -9797,7 +9799,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.004303515, y: -0.30985403}
+  m_Offset: {x: -0.0004748106, y: -0.17959642}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -9808,7 +9810,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.8708941, y: 1.1302919}
+  m_Size: {x: 0.7625425, y: 0.8697767}
   m_EdgeRadius: 0
 --- !u!114 &8764235404458630018
 MonoBehaviour:

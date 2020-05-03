@@ -34,13 +34,13 @@ public abstract class Item : ScriptableObject
             return false;
         }
 
-        return this.uuid == item.uuid && this.name == item.name && this.id == item.id;
+        return this.id == item.id;
       
     }
 
     public override int GetHashCode()
     {
-        return this.uuid.GetHashCode();
+        return this.id.GetHashCode();
     }
 }
 

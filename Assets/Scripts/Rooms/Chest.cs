@@ -114,10 +114,10 @@ public class Chest : MonoBehaviour
 
                             PlayerManager.instance.gainGold(coinCount);
 
-                            isClosed = false;
+                            
 
                         }));
-
+                        isClosed = false;
                     }
                     break;
                 case ChestType.MIMIC:

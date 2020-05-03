@@ -13,6 +13,7 @@ public class Throw : MonoBehaviour
     public Animator WeaponAnimator;
     public SpriteRenderer weaponRenderer;
     public GameObject pickupVersion;
+    public ParticleSystem DestroyPS;
 
     Dictionary<string, object> weaponStats;
 
@@ -28,7 +29,6 @@ public class Throw : MonoBehaviour
     void Start()
     {
         weaponRenderer.sprite = weapon.sprite;
-        //UpdateWeaponStats(weaponRenderer.sprite.name);
     }
 
     // Update is called once per frame
@@ -63,17 +63,13 @@ public class Throw : MonoBehaviour
         {
             if (left)
             {
-                //throwRotation += (float) weaponStats[Constants.PARAM_ROTATION_SPEED];
                 throwRotation += weapon.rotationSpeed;
             }
             else
             {
-                //throwRotation -= (float) weaponStats[Constants.PARAM_ROTATION_SPEED];
                 throwRotation -= weapon.rotationSpeed;
             }
             //Make sure weapon rotates in right direction
-
-            //transform.position = transform.position + throwPosition.normalized * (float)weaponStats[Constants.PARAM_THROW_SPEED] * Time.deltaTime;
             transform.position = transform.position + throwPosition.normalized * weapon.throwSpeed * Time.deltaTime;
 
             transform.GetChild(0).rotation = Quaternion.Euler(0f, 0f, throwRotation); ;
@@ -88,7 +84,37 @@ public class Throw : MonoBehaviour
         left = throwPosition.x < transform.position.x;
         throwRotation = transform.rotation.z;
         isThrown = true;
+        
+
+        if(weapon.type == WeaponType.BOW)
+        {
+            RangedWeapon rangedWeapon = (RangedWeapon)weapon;
+            if (rangedWeapon.FirePoint == FirePoint.ONTRHOW)
+            {
+                //Spawn the number of projectiles around the player
+                float degOffsetPerProjectile = rangedWeapon.degreesAround/rangedWeapon.numberToSpawn;
+                float degOffsetStart = -(rangedWeapon.degreesAround/2);
+                for (int i = 0; i < rangedWeapon.numberToSpawn; i++)
+                {
+                    GameObject projectile = Instantiate(rangedWeapon.projectile);
+                    Arrow arrow = projectile.GetComponent<Arrow>();
+                    arrow.speed = weapon.throwSpeed +2;
+                    arrow.transform.position = transform.parent.position;
+                    Vector3 newPos = Quaternion.AngleAxis(degOffsetStart, Vector3.forward) * throwPosition;// throwPosition;
+                    degOffsetStart += degOffsetPerProjectile;
+                    Vector2 heading = newPos;
+                    float distance = heading.magnitude;
+                    arrow.direction = heading / distance;
+                    arrow.weapon = weapon;
+                    arrow.weapon.throwSpeed = weapon.throwSpeed;
+                    arrow.shooter = transform.parent.gameObject;
+
+                }
+            }
+        }
+
         transform.parent = null;
+
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -100,17 +126,25 @@ public class Throw : MonoBehaviour
             {
                 if (!enemiesHurt.Contains(other.transform.gameObject))
                 {
-                    //other.GetComponent<HitManager>().TakeDamage(Convert.ToInt32(weaponStats[Constants.PARAM_DAMAGE]), throwOrigin, (float)weaponStats[Constants.PARAM_KNOCKBACK]);
                     other.GetComponent<HitManager>().TakeDamage(weapon.damage, throwOrigin, weapon.knockback);
                 }
             }
             else if (other.CompareTag("Wall"))
             {
-                //TODO instantiate pickup as child of the current room
-                GameObject pickup = Instantiate(pickupVersion, RoomSpawner.instance.getCurrentRoom().transform);
-                pickup.GetComponent<SpriteRenderer>().sprite = weaponRenderer.sprite;
-                pickup.transform.position = transform.position;
-                pickup.transform.rotation = transform.GetChild(0).rotation;
+                if (UnityEngine.Random.Range(0, 100) > Constants.CHANCE_WEAPON_BREAKS || !Inventory.instance.hasWeapon())
+                {
+                    GameObject pickup = Instantiate(pickupVersion, RoomSpawner.instance.getCurrentRoom().transform);
+                    pickup.GetComponent<Pickup>().item = weapon;
+                    pickup.GetComponent<Pickup>().SetStatic();
+                    pickup.transform.position = transform.position;
+                    pickup.transform.rotation = transform.GetChild(0).rotation;
+                }
+                else
+                {
+                    //Play some particle effect
+                    ParticleSystem ps = Instantiate(DestroyPS);
+                    ps.transform.position = transform.position;
+                }
                 Destroy(gameObject);
             }
         }

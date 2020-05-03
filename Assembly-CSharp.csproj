@@ -63,20 +63,19 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Arrow.cs" />
     <Compile Include="Assets\Particle Attractor by Moonflower Carnivore\Scripts\particleAttractorLinear.cs" />
     <Compile Include="Assets\Particle Attractor by Moonflower Carnivore\Scripts\particleAttractorMove.cs" />
     <Compile Include="Assets\Particle Attractor by Moonflower Carnivore\Scripts\particleAttractorSelf.cs" />
     <Compile Include="Assets\Particle Attractor by Moonflower Carnivore\Scripts\particleAttractorSpherical.cs" />
     <Compile Include="Assets\Particle Attractor by Moonflower Carnivore\Scripts\rotation.cs" />
-    <Compile Include="Assets\RangedAttack.cs" />
     <Compile Include="Assets\Scripts\Enemies\EnemyAI.cs" />
     <Compile Include="Assets\Scripts\Enemies\EnemyManager.cs" />
     <Compile Include="Assets\Scripts\Enemies\EnemySpawner.cs" />
     <Compile Include="Assets\Scripts\Generic\AbstractAttack.cs" />
+    <Compile Include="Assets\Scripts\Generic\Arrow.cs" />
     <Compile Include="Assets\Scripts\Generic\Attack.cs" />
     <Compile Include="Assets\Scripts\Generic\HitManager.cs" />
-    <Compile Include="Assets\Scripts\Generic\Item.cs" />
+    <Compile Include="Assets\Scripts\Generic\RangedAttack.cs" />
     <Compile Include="Assets\Scripts\Generic\Throw.cs" />
     <Compile Include="Assets\Scripts\Player\Inventory.cs" />
     <Compile Include="Assets\Scripts\Player\InventorySlot.cs" />
@@ -91,6 +90,9 @@
     <Compile Include="Assets\Scripts\Rooms\Room.cs" />
     <Compile Include="Assets\Scripts\Rooms\RoomSpawner.cs" />
     <Compile Include="Assets\Scripts\Rooms\RoomTemplates.cs" />
+    <Compile Include="Assets\Scripts\ScriptableObjects\Enemy.cs" />
+    <Compile Include="Assets\Scripts\ScriptableObjects\Item.cs" />
+    <Compile Include="Assets\Scripts\ScriptableObjects\RangedWeapon.cs" />
     <Compile Include="Assets\Scripts\ScriptableObjects\Weapon.cs" />
     <Compile Include="Assets\Scripts\UI\GameMenu.cs" />
     <Compile Include="Assets\Scripts\UI\Healthbar.cs" />
@@ -101,7 +103,6 @@
     <Compile Include="Assets\Scripts\Util\PositionUpdater.cs" />
     <Compile Include="Assets\Scripts\Util\RoundCameraPos.cs" />
     <Compile Include="Assets\Scripts\Util\Util.cs" />
-    <Compile Include="Assets\WeaponDisplay.cs" />
     <None Include="Assets\Particle Attractor by Moonflower Carnivore\Shaders\Particles Additive Intensify.shader" />
     <None Include="Assets\Particle Attractor by Moonflower Carnivore\Particle Attractor documentation.txt" />
     <Reference Include="Unity.RenderPipeline.Universal.ShaderLibrary">

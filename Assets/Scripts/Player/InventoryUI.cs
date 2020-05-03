@@ -24,6 +24,14 @@ public class InventoryUI : MonoBehaviour
         if (Input.GetButtonDown(Constants.INVENTORY_BUTTON_TAG))
         {
             inventoryUI.SetActive(!inventoryUI.activeSelf);
+            if (inventoryUI.activeSelf)
+            {
+                UpdateUI();
+            }
+        }
+        if (inventoryUI.activeSelf && Input.GetKeyDown(KeyCode.Escape))
+        {
+            inventoryUI.SetActive(!inventoryUI.activeSelf);
         }
     }
 

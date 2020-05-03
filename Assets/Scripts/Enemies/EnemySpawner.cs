@@ -8,10 +8,17 @@ public class EnemySpawner : MonoBehaviour
     public GameObject enemyPrefab;
     public GameObject rangedEnemyPrefab;
 
+    //TODO biomes?
+    public Enemy[] enemyData;
+    Dictionary<int, List<Enemy>> enemiesPerPlayerLevel = new Dictionary<int, List<Enemy>>();
+    List<Enemy> enemiesToSelectFrom = new List<Enemy>();
+
     Dictionary<Vector3, List<EnemyManager>> enemies = new Dictionary<Vector3, List<EnemyManager>>();
 
     public delegate void RoomClearDelegate();
     public event RoomClearDelegate OnAllEnemiesCleared;
+
+    int credits = 30;
 
     public void Awake()
     {
@@ -22,26 +29,54 @@ public class EnemySpawner : MonoBehaviour
         instance = this;
     }
 
+    private void Start()
+    {
+        PlayerManager.instance.OnLevelIncrease += UpdateDifficultyAfterLevelIncrease;
+
+        enemyData = Resources.LoadAll<Enemy>(Constants.ENEMY_PATH);
+
+        foreach (Enemy enemySO in enemyData)
+        {
+            if (enemiesPerPlayerLevel.ContainsKey(enemySO.minPlayerLevel))
+            {
+                enemiesPerPlayerLevel[enemySO.minPlayerLevel].Add(enemySO);
+            }
+            else
+            {
+                enemiesPerPlayerLevel[enemySO.minPlayerLevel] = new List<Enemy>{enemySO};
+            }
+        }
+        enemiesToSelectFrom.AddRange(enemiesPerPlayerLevel[1]);
+    }
+
     public void SpawnEnemies(List<Vector3> possiblePositions, Transform parent, Vector3 gridPosition)
     {
-        //TODO: Increase/Decrease by some manner
-        int numberOfEnemiesToSpawn = 3 + PlayerManager.instance.playerLevel;
-
-        //TODO select enemytype/weapontype
-        Debug.Log($"Spawning {numberOfEnemiesToSpawn} enemies");
-
-        for (int i = 0; i < numberOfEnemiesToSpawn + Random.Range(-1, 2); i++)
+        int currentCredits = credits;
+        //Certain number of credits to work with
+        while(currentCredits > 0)
         {
+            //Randomly select enemy object
+            Enemy enemyToSpawn = enemiesToSelectFrom[Random.Range(0, enemiesToSelectFrom.Count)];
+            //Substract cost for this enemy
+            currentCredits -= enemyToSpawn.creditCost;
+
             //Choose what rarity weapon the enemy will have
             //0-70 = white, 70-90 = green 90-100 = epic
             int chance = Random.Range(0, 100);
             Weapon enemyWeapon;
-            if(chance < 70)
+           
+            if (chance < 70)
             {
-                enemyWeapon = (Weapon)Inventory.instance.whiteItems[Random.Range(0, Inventory.instance.whiteItems.Count)];
+                enemyWeapon = Inventory.instance.getRandomWeaponOfTypeAndRarity(Util.getRandomWeaponTypeForEnemy(enemyToSpawn.type), Rarity.WHITE);
             }
-            else{
-                enemyWeapon = (Weapon)Inventory.instance.greenItems[Random.Range(0, Inventory.instance.greenItems.Count)];
+            else
+            {
+                enemyWeapon = Inventory.instance.getRandomWeaponOfTypeAndRarity(Util.getRandomWeaponTypeForEnemy(enemyToSpawn.type), Rarity.GREEN);
+            }
+
+            if(enemyWeapon == null)
+            {
+                enemyWeapon = Inventory.instance.getRandomWeaponOfTypeAndRarity(Util.getRandomWeaponTypeForEnemy(enemyToSpawn.type), Rarity.WHITE);
             }
             //TODO add epic items here
             GameObject newEnemy = null;
@@ -56,14 +91,17 @@ public class EnemySpawner : MonoBehaviour
                 default:
                     break;
             }
+            EnemyManager em = newEnemy.GetComponent<EnemyManager>();
+            em.enemy = enemyToSpawn;
+            //TODO possibly mutate enemy stats
 
             Vector3 pos = possiblePositions[Random.Range(0, possiblePositions.Count)];
-             
+
             newEnemy.transform.position = pos;
             //Set the enemies grid position
-            EnemyManager em = newEnemy.GetComponentInChildren<EnemyManager>();
             newEnemy.GetComponentInChildren<AbstractAttack>().weapon = enemyWeapon;
-            if (enemies.ContainsKey(gridPosition)){
+            if (enemies.ContainsKey(gridPosition))
+            {
                 enemies[gridPosition].Add(em);
             }
             else
@@ -75,6 +113,23 @@ public class EnemySpawner : MonoBehaviour
             //Register event handler
             em.onEnemyDeath += RemoveEnemyFromRoomList;
             PlayerManager.instance.subscribeToEnemy(newEnemy.GetComponentInChildren<EnemyManager>());
+
+
+        }
+        
+        //TODO: Increase/Decrease by some manner
+        int numberOfEnemiesToSpawn = 3 + PlayerManager.instance.playerLevel;
+
+
+
+        //TODO select enemytype/weapontype
+        Debug.Log($"Spawning {numberOfEnemiesToSpawn} enemies");
+
+        for (int i = 0; i < numberOfEnemiesToSpawn + Random.Range(-1, 2); i++)
+        {
+
+
+
         }
 
     }
@@ -91,6 +146,14 @@ public class EnemySpawner : MonoBehaviour
 
     }
 
-
+    void UpdateDifficultyAfterLevelIncrease(int newPlayerLevel)
+    {
+        //TODO better scaling
+        credits += newPlayerLevel * 10;
+        if (enemiesPerPlayerLevel.ContainsKey(newPlayerLevel))
+        {
+            enemiesToSelectFrom.AddRange(enemiesPerPlayerLevel[newPlayerLevel]);
+        }
+    }
 
 }

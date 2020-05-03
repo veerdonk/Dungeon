@@ -70,7 +70,8 @@ public class RoomSpawner : MonoBehaviour
 
         //Register event for roomclear
         EnemySpawner.instance.OnAllEnemiesCleared += SpawnLoot;
-       
+      
+        
     }
 
     public GameObject getCurrentRoom()
@@ -294,7 +295,7 @@ public class RoomSpawner : MonoBehaviour
 
                 //Remove extra walls
                 //Get relative x and y start position
-                int startX = -(int)Constants.ENTRANCE_WIDTH / 2; //-1
+                int startX = newPositionWall.x + 1;// -(int)Constants.ENTRANCE_WIDTH / 2; //-1
                 int startY = (int)initialPosition.y - 1;
                 for (int i = startX; i < Constants.ENTRANCE_WIDTH + startX; i++)
                 {
@@ -407,28 +408,36 @@ public class RoomSpawner : MonoBehaviour
         //Create new room in right direction
         int playerXOfsset = 0;
         int playerYOfsset = 0;
+
+        GameObject roomToAdd;
+
         switch (direction)
         {
             case Constants.EXIT_TOP:
                 playerGridLocY++;
                 playerYOfsset = -2;
+                roomToAdd = templates.Brooms[Random.Range(0, templates.Brooms.Count)];
                 break;
 
             case Constants.EXIT_BOT:
                 playerGridLocY--;
                 playerYOfsset = 2;
+                roomToAdd = templates.Trooms[Random.Range(0, templates.Trooms.Count)];
                 break;
             case Constants.EXIT_RIGHT:
                 playerGridLocX++;
                 playerXOfsset = -2;
+                roomToAdd = templates.Lrooms[Random.Range(0, templates.Lrooms.Count)];
                 break;
 
             case Constants.EXIT_LEFT:
                 playerGridLocX--;
                 playerXOfsset = 2;
+                roomToAdd = templates.Rrooms[Random.Range(0, templates.Rrooms.Count)];
                 break;
 
             default:
+                roomToAdd = null;
                 Debug.LogError($"Entrance code unknown: {direction}");
                 break;
         }
@@ -438,7 +447,7 @@ public class RoomSpawner : MonoBehaviour
         {
             if (!roomGrid[playerGridLocX].ContainsKey(playerGridLocY)){
                 //X exists, Y does not
-                addedRoom = AddRoom(templates.rooms[Random.Range(0, templates.rooms.Length)]);
+                addedRoom = AddRoom(roomToAdd);
                 AddExits(addedRoom.transform);
             }
             else
@@ -601,8 +610,34 @@ public class RoomSpawner : MonoBehaviour
 
             //Chance for items or coins
             //Chance to select different items
+            int chance = Random.Range(0, 100);
+            List<Item> items = new List<Item>();
+            if (chance < Constants.CHANCE_CHEST_HAS_COINS)
+            {
+                SpawnCoinChest(Random.Range(15, 40), lootPoint);
+            }
+            else if(chance < Constants.CHANCE_CHEST_HAS_WHITE)
+            {
+                for (int i = 0; i < Random.Range(1, Constants.MAX_GREEN_ITEM_SPAWN); i++)
+                {
 
-            SpawnCoinChest(Random.Range(15, 40), lootPoint);
+                    items.Add(Inventory.instance.whiteItems[Random.Range(0, Inventory.instance.whiteItems.Count)]);
+                }
+                SpawnItemChest(items, lootPoint);
+            }
+            else
+            { 
+                //Spawn a chest with green items
+                for (int i = 0; i < Random.Range(1, Constants.MAX_GREEN_ITEM_SPAWN); i++)
+                {
+
+                    items.Add(Inventory.instance.greenItems[Random.Range(0, Inventory.instance.greenItems.Count)]);
+                }
+                SpawnItemChest(items, lootPoint);
+            }
+
+
+            
 
         }
         

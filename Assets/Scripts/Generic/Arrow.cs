@@ -12,6 +12,9 @@ public class Arrow : MonoBehaviour
     private bool isFlying = true;
     public GameObject shooter;
 
+    public int? damage;
+    public float? speed;
+
     private void Start()
     {
         float rotZ = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
@@ -22,7 +25,11 @@ public class Arrow : MonoBehaviour
     {
         if (isFlying)
         {
-            rb.MovePosition(rb.position + (Vector2)direction * weapon.throwSpeed * Time.deltaTime);
+            if(speed == null)
+            {
+                speed = weapon.throwSpeed;
+            }
+            rb.MovePosition(rb.position + (Vector2)direction * (int)speed * Time.deltaTime);
         }
     }
 
@@ -32,7 +39,7 @@ public class Arrow : MonoBehaviour
         {
             if (other.CompareTag(Constants.PLAYER_TAG) || other.CompareTag(Constants.ENEMY_TAG) || other.CompareTag(Constants.WALL_TAG))
             {
-                transform.position = transform.position + direction * Random.Range(0.3f, 0.5f);
+                transform.position = transform.position + direction * Random.Range(0.3f, 0.45f);
                 rb.velocity = Vector2.zero;
                 rb.isKinematic = true;
                 bc.enabled = false;
@@ -46,7 +53,11 @@ public class Arrow : MonoBehaviour
                 }
                 isFlying = false;
                 if (other.CompareTag(Constants.PLAYER_TAG) || other.CompareTag(Constants.ENEMY_TAG)){
-                    other.GetComponent<HitManager>().TakeDamage(weapon.damage, transform.position, weapon.knockback);
+                    if(damage == null)
+                    {
+                        damage = weapon.damage;
+                    }
+                    other.GetComponent<HitManager>().TakeDamage((int)damage, transform.position, weapon.knockback);
                 }
             }
         }

@@ -5,9 +5,10 @@ using UnityEngine;
 
 public class EnemyManager : HitManager
 {
+    public Enemy enemy;
     public AbstractAttack AAttack;
     public LayerMask layer;
-
+    public Animator enemyAnimator;
     public SpriteRenderer weaponRenderer;
     public int health = 100;
     public ParticleSystem HurtPS;
@@ -26,10 +27,28 @@ public class EnemyManager : HitManager
 
     public Vector3 enemyGridPosition;
 
-    public EnemyType type;
-
     private void Start()
     {
+        health = enemy.health;
+        staggerTime = enemy.staggerTime;
+
+        switch (enemy.race)
+        {
+           case EnemyRace.ORC:
+                enemyAnimator.SetTrigger(Constants.ORC_ANIM);
+                break;
+            case EnemyRace.SKELETON:
+                enemyAnimator.SetTrigger(Constants.SKELETON_ANIM);
+                break;
+            case EnemyRace.LIZARD_F:
+                enemyAnimator.SetTrigger(Constants.LIZARD_F_ANIM);
+                break;
+            default:
+                break;
+        }
+
+        transform.localScale = transform.localScale * enemy.sizeModifier;
+
         rb = gameObject.GetComponent<Rigidbody2D>();
         weaponRenderer.sprite = AAttack.weapon.sprite;
         healthbar.SetMaxHealth(health);
@@ -81,13 +100,11 @@ public class EnemyManager : HitManager
         newWeapon.GetComponent<Pickup>().item = AAttack.weapon;
 
         //TODO change values to actual gold/exp
-        int coinCount = 10;
-
-        onEnemyDeath.Invoke(10, coinCount, this);
+        onEnemyDeath.Invoke(enemy.expValue, enemy.coinValue, this);
 
         ParticleSystem cs = Instantiate(coinSplosion);
         cs.transform.position = transform.position;
-        cs.emission.SetBursts(new[] { new ParticleSystem.Burst(0, coinCount) });
+        cs.emission.SetBursts(new[] { new ParticleSystem.Burst(0, enemy.coinValue) });
         cs.Play();
 
         Destroy(transform.gameObject);
@@ -113,10 +130,4 @@ public class EnemyManager : HitManager
         hurtPS.transform.position = transform.position;
         hurtPS.Play();
     }
-}
-
-public enum EnemyType
-{
-    MELEE,
-    RANGED
 }

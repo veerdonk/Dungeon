@@ -386,10 +386,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a929c2ac2a965b4e8c059bc13142e56, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enemy: {fileID: 0}
   AAttack: {fileID: 7608271306040898244}
   layer:
     serializedVersion: 2
     m_Bits: 1024
+  enemyAnimator: {fileID: 8668175598019558136}
   weaponRenderer: {fileID: 7608271306395831878}
   health: 100
   HurtPS: {fileID: 6762066000698448862, guid: 20456b8f9120f68449c8db5598b04b26, type: 3}
@@ -400,7 +402,6 @@ MonoBehaviour:
     type: 3}
   attackPos: {fileID: 7608271305194070477}
   enemyGridPosition: {x: 0, y: 0, z: 0}
-  type: 1
 --- !u!50 &7608271306040898250
 Rigidbody2D:
   serializedVersion: 4
@@ -435,7 +436,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.08873719, y: -0.10986519}
+  m_Offset: {x: 0.07423353, y: -0.06925464}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -446,7 +447,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.90703726, y: 1.2197304}
+  m_Size: {x: 0.6111609, y: 0.83683157}
   m_EdgeRadius: 0
 --- !u!114 &7608271306040898244
 MonoBehaviour:
@@ -460,7 +461,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c02da1a6c3ee78e4fba71454518b587b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  weapon: {fileID: 11400000, guid: 856043c135c04c845954e96cbbaf7bd3, type: 2}
+  weapon: {fileID: 0}
   timeSinceAttack: 0
   attackPos: {fileID: 7608271305194070477}
   layer:
@@ -468,6 +469,7 @@ MonoBehaviour:
     m_Bits: 1024
   WeaponAnimator: {fileID: 7608271306395831879}
   weaponRenderer: {fileID: 7608271306395831878}
+  enemy: {fileID: 0}
   arrowPrefab: {fileID: 916608386554091130, guid: 905e0978e1bc63d42977d66b11bfcfdd,
     type: 3}
 --- !u!1 &7608271306395831873

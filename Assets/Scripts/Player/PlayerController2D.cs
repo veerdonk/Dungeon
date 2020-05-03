@@ -13,12 +13,14 @@ public class PlayerController2D : MonoBehaviour
     public ParticleSystem throwPS;
     public ParticleSystem dustPS;
     public ParticleSystem dashPS;
+    public ParticleSystem arrowPS;
 
     public float MOVEMENT_BASE_SPEED = 1.0f;
 
     public Vector2 movementDirection;
     public float movementSpeed = 5f;
 
+    public GameObject arrowContainer;
     public int maxDashCharges = 3;
     public int dashCharges = 3;
     public float dashSpeed = 10f;
@@ -114,6 +116,17 @@ public class PlayerController2D : MonoBehaviour
             {
                 dashCharges++;
             }));
+
+            ParticleSystem arrowParticles = Instantiate(arrowPS);
+            arrowParticles.emission.SetBursts(new[] { new ParticleSystem.Burst(0, arrowContainer.transform.childCount) });
+            arrowParticles.transform.position = transform.position;
+            arrowParticles.Play();
+            
+
+            foreach (Transform child in arrowContainer.transform)
+            {
+                Destroy(child.gameObject);
+            }
             ParticleSystem dashPSObj = Instantiate(dashPS);
             dashPSObj.transform.position = transform.position;
             CameraShake.instance.ShakeCamera();

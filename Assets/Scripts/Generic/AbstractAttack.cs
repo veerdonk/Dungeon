@@ -13,10 +13,12 @@ public abstract class AbstractAttack : MonoBehaviour
     public Animator WeaponAnimator;
     public SpriteRenderer weaponRenderer;
 
+    public Enemy enemy;
     // Start is called before the first frame update
     void Start()
     {
         attackPos = GetComponentInParent<Transform>();
+        enemy = GetComponent<EnemyManager>().enemy;
     }
 
     // Update is called once per frame

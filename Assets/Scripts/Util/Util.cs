@@ -27,4 +27,9 @@ public class Util : MonoBehaviour
         text.color = originalColor;
     }
 
+    public static WeaponType getRandomWeaponTypeForEnemy(EnemyType type)
+    {
+        return Constants.enemyTypeToWeaponType[type][UnityEngine.Random.Range(0, Constants.enemyTypeToWeaponType[type].Count)];
+    }
+
 }

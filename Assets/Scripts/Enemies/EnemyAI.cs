@@ -20,10 +20,15 @@ public class EnemyAI : MonoBehaviour
     Transform target;
 
     bool seesTarget = false;
+    bool flipped = false;
 
     // Start is called before the first frame update
     void Start()
     {
+        Enemy enemy = GetComponent<EnemyManager>().enemy;
+        forceSpeed = enemy.speed;
+        followDistance = enemy.followDistance;
+        minDistance = enemy.minDistance;
 
         target = GameObject.FindGameObjectWithTag("Player").transform;
 
@@ -87,13 +92,16 @@ public class EnemyAI : MonoBehaviour
                 currentWaypoint++;
             }
 
-            if (force.x > 0)
+            //float localScaleX = transform.localScale.x;
+            if (force.x > 0 && flipped)
             {
-                transform.localScale = new Vector3(1f, 1f, 1f);
+                transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
+                flipped = false;
             }
-            else if (force.x < 0)
+            else if (force.x < 0 && !flipped)
             {
-                transform.localScale = new Vector3(-1f, 1f, 1f);
+                transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
+                flipped = true;
             }
 
 
@@ -105,26 +113,32 @@ public class EnemyAI : MonoBehaviour
             rb.AddForce(force);
             animator.SetFloat("Speed", force.sqrMagnitude);
 
-            if(target.position.x > transform.position.x)
+            if (target.position.x > transform.position.x && flipped)
             {
-                transform.localScale = new Vector3(1f, 1f, 1f);
+                transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
+                flipped = false;
             }
-            else if(target.position.x < transform.position.x)
+            else if (target.position.x < transform.position.x && !flipped)
             {
-                transform.localScale = new Vector3(-1f, 1f, 1f);
+                transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
+                flipped = true;
             }
-            else if (force.x > 0)
-            {
-                transform.localScale = new Vector3(1f, 1f, 1f);
-            }
-            else if (force.x < 0)
-            {
-                transform.localScale = new Vector3(-1f, 1f, 1f);
-            }
+
         }
 
         else
         {
+            if (target.position.x > transform.position.x && flipped)
+            {
+                transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
+                flipped = false;
+            }
+            else if (target.position.x < transform.position.x && !flipped)
+            {
+                transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
+                flipped = true;
+            }
+
             animator.SetFloat("Speed", 0f);
             if (GetComponent<EnemyManager>().timeSinceLastHit <= 0)
             {

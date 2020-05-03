@@ -543,10 +543,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a929c2ac2a965b4e8c059bc13142e56, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enemy: {fileID: 0}
   AAttack: {fileID: 5525534323607751329}
   layer:
     serializedVersion: 2
     m_Bits: 1024
+  enemyAnimator: {fileID: 5525534324934190193}
   weaponRenderer: {fileID: 5525534323216280559}
   health: 100
   HurtPS: {fileID: 6762066000698448862, guid: 20456b8f9120f68449c8db5598b04b26, type: 3}
@@ -578,6 +580,7 @@ MonoBehaviour:
     m_Bits: 1024
   WeaponAnimator: {fileID: 5525534324081980638}
   weaponRenderer: {fileID: 5525534323216280559}
+  enemy: {fileID: 0}
 --- !u!1 &5525534324081980636
 GameObject:
   m_ObjectHideFlags: 0

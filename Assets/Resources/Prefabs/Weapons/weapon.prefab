@@ -46,7 +46,7 @@ SpriteRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 0
-  m_RenderingLayerMask: 1
+  m_RenderingLayerMask: 4294967295
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
@@ -147,6 +147,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 549f8768f92d9934fa76275e56922fca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  weapon: {fileID: 0}
   offset: 45
   layer:
     serializedVersion: 2
@@ -154,6 +155,8 @@ MonoBehaviour:
   WeaponAnimator: {fileID: 5721370883166542465}
   weaponRenderer: {fileID: 5721370882206899838}
   pickupVersion: {fileID: 9077179878341303442, guid: 0901fd0188fe1bb48be79e1f096ae2dc,
+    type: 3}
+  DestroyPS: {fileID: 4777002754339374444, guid: da5cbfc66d340b0419399f378401fccd,
     type: 3}
   isThrown: 0
 --- !u!58 &8539237687413026453

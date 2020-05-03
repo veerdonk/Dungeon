@@ -9,8 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 56ed5c964a3200648852038d51a10455, type: 3}
-  m_Name: Bow
+  m_Script: {fileID: 11500000, guid: 073853bd71455564195f6c5fb0c293b1, type: 3}
+  m_Name: Wooden Bow
   m_EditorClassIdentifier: 
   id: weapon_bow
   name: Wooden Bow
@@ -20,9 +20,15 @@ MonoBehaviour:
   rarity: 0
   type: 1
   damage: 10
-  range: 10
+  range: 5
   knockback: 200
   delay: 1
   animationSpeed: 1
   rotationSpeed: 20
   throwSpeed: 15
+  projectile: {fileID: 916608386554091130, guid: 905e0978e1bc63d42977d66b11bfcfdd,
+    type: 3}
+  numberToSpawn: 4
+  projectileDelay: 0
+  degreesAround: 40
+  FirePoint: 0

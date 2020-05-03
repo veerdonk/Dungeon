@@ -23,6 +23,9 @@ public class PlayerManager : HitManager
     public delegate void StatsChanged();
     public event StatsChanged OnPlayerStatChange;
 
+    public delegate void LevelIncreased(int level);
+    public event LevelIncreased OnLevelIncrease;
+
     private void Awake()
     {
         if (instance != null)
@@ -122,6 +125,7 @@ public class PlayerManager : HitManager
         levelPS.Play();
         UIUpdater.instance.displayLevelUp = true;
         OnPlayerStatChange.Invoke();
+        OnLevelIncrease.Invoke(playerLevel);
     }
 
 }

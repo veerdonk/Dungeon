@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.PlayerLoop;
 
 public class InventoryUI : MonoBehaviour
 {
@@ -10,6 +10,7 @@ public class InventoryUI : MonoBehaviour
     Inventory inventory;
     public GameObject currentEquippedWeapon;
     public GameObject weaponPrefab;
+    [SerializeField] private GameObject pauseContainer;
 
     // Start is called before the first frame update
     void Start()
@@ -21,7 +22,7 @@ public class InventoryUI : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetButtonDown(Constants.INVENTORY_BUTTON_TAG))
+        if (Input.GetButtonDown(Constants.INVENTORY_BUTTON_TAG) && !pauseContainer.activeSelf)
         {
             inventoryUI.SetActive(!inventoryUI.activeSelf);
             if (inventoryUI.activeSelf)
@@ -29,10 +30,25 @@ public class InventoryUI : MonoBehaviour
                 UpdateUI();
             }
         }
+        if (!inventoryUI.activeSelf && Input.GetKeyDown(KeyCode.Escape))
+        {
+
+            pauseContainer.SetActive(!pauseContainer.activeSelf);
+            if (pauseContainer.activeSelf)
+            {
+                Time.timeScale = 0;
+            }
+            else
+            {
+                Time.timeScale = 1;
+            }
+        }
         if (inventoryUI.activeSelf && Input.GetKeyDown(KeyCode.Escape))
         {
             inventoryUI.SetActive(!inventoryUI.activeSelf);
         }
+
+
     }
 
     void UpdateUI()
@@ -55,6 +71,7 @@ public class InventoryUI : MonoBehaviour
 
     }
 
+    //IMPROVEMENT -> get item/weapon pooling
     void UpdateHotbarUI()
     {
       
@@ -81,8 +98,10 @@ public class InventoryUI : MonoBehaviour
         {
             if (currentEquippedWeapon == null || currentEquippedWeapon.GetComponent<Throw>().isThrown)
             {
+
                 currentEquippedWeapon = Instantiate(weaponPrefab, GameObject.FindGameObjectWithTag(Constants.PLAYER_TAG).transform);
                 currentEquippedWeapon.GetComponent<Throw>().weapon = (Weapon)hotbarSlots[inventory.selectedSlot].item;
+                AddColliders(hotbarSlots[inventory.selectedSlot].item.id, currentEquippedWeapon);
                 //currentEquippedWeapon.GetComponentInChildren<SpriteRenderer>().sprite = hotbarSlots[inventory.selectedSlot].item.sprite;
             }
             else
@@ -91,6 +110,7 @@ public class InventoryUI : MonoBehaviour
                 Destroy(currentEquippedWeapon);
                 currentEquippedWeapon = (GameObject)Instantiate(weaponPrefab, GameObject.FindGameObjectWithTag(Constants.PLAYER_TAG).transform);
                 currentEquippedWeapon.GetComponent<Throw>().weapon = (Weapon)hotbarSlots[inventory.selectedSlot].item;
+                AddColliders(hotbarSlots[inventory.selectedSlot].item.id, currentEquippedWeapon);
                 //currentEquippedWeapon.GetComponentInChildren<SpriteRenderer>().sprite = hotbarSlots[inventory.selectedSlot].item.sprite;
             }
         }
@@ -101,4 +121,16 @@ public class InventoryUI : MonoBehaviour
             Destroy(currentEquippedWeapon);
         }
     }
+
+    void AddColliders(string id, GameObject obj)
+    {
+        PolygonCollider2D colliderToUpdate = obj.GetComponentInChildren<PolygonCollider2D>();
+        PolygonCollider2D polygoncollider = inventory.weaponsColliders[id];
+        colliderToUpdate.pathCount = polygoncollider.pathCount;
+        for (int p = 0; p < polygoncollider.pathCount; p++)
+        {
+            colliderToUpdate.SetPath(p, polygoncollider.GetPath(p));
+        }
+    }
+
 }

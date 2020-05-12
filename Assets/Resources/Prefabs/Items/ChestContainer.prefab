@@ -9787,6 +9787,8 @@ MonoBehaviour:
   coinPS: {fileID: 7543832546417832928}
   spawnPS: {fileID: 1296893540294839072}
   lootSpawnPS: {fileID: 1611803287528728238}
+  itemSpawnerPrefab: {fileID: 4363346923048404918, guid: adb0ef79471f16642bf7864558d78b23,
+    type: 3}
   animator: {fileID: 6058763723909751830}
   weaponPickupPrefab: {fileID: 9077179878341303442, guid: 0901fd0188fe1bb48be79e1f096ae2dc,
     type: 3}

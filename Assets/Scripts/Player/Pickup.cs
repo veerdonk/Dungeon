@@ -12,11 +12,23 @@ public class Pickup : MonoBehaviour
         inventory = Inventory.instance;
         gameObject.GetComponent<SpriteRenderer>().sprite = item.sprite;
 
+        if(item.itemType == ItemType.WEAPON)
+        {
+            Weapon weap = (Weapon)item;
+            transform.localScale = transform.localScale * weap.sizeModifier;
+        }
     }
 
-    public void SetStatic()
+    public void SetStatic(bool isStatic)
     {
-        GetComponent<Animator>().SetTrigger("IsStatic");
+        if (isStatic)
+        {
+            GetComponent<Animator>().SetTrigger("IsStatic");
+        }
+        else
+        {
+            GetComponent<Animator>().SetTrigger("pickup");
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -25,6 +37,7 @@ public class Pickup : MonoBehaviour
         {
             if (inventory.AddItem(item))
             {
+                AudioManager.instance.PlayRandomOfType(SoundType.PICKUP);
                 Destroy(gameObject);
             }
         }

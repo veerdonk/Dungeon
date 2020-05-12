@@ -9,6 +9,7 @@ public class Room
     public bool hasNeighbours;
     public List<string> exits = new List<string>();
     public List<Vector3> possibleSpawnPoints;
+    public List<Transform> walls;
 
     public Room(GameObject room, Vector3 gridPosition)
     {

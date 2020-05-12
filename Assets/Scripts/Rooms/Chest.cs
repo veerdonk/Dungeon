@@ -9,6 +9,7 @@ public class Chest : MonoBehaviour
     public ParticleSystem coinPS;
     public ParticleSystem spawnPS;
     public ParticleSystem lootSpawnPS;
+    public GameObject itemSpawnerPrefab;
     public Animator animator;
     public GameObject weaponPickupPrefab;
 
@@ -48,53 +49,27 @@ public class Chest : MonoBehaviour
 
     }
 
-
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag(Constants.PLAYER_TAG))
         {
+            if (isClosed)
+            {
+                //Play Chest opening sound
+                AudioManager.instance.PlayOnce(Constants.CHEST_OPEN_SOUND);
+            }
             switch (type)
             {
                 case ChestType.ITEM:
 
                     if (lootSpawnPS != null && isClosed)
                     {
-                        //Spit out items one by one
                         animator.SetTrigger(triggerName);
-                        StartCoroutine(Util.ExecuteAfterTime(0.8f, () =>
-                        {
 
-                            List<Vector3> lootLocations = RoomSpawner.instance.FindLocationsNearPoint(transform.position, items.Count);
-                            List<GameObject> spawnedItems = new List<GameObject>();
-
-                            for (int i = 0; i < items.Count; i++)
-                            {
-                                Debug.Log($"Spawning item #{i}: {items[i]} at position {lootLocations[i]}");
-
-                                ParticleSystem lootEffect = Instantiate(lootSpawnPS);
-                                lootEffect.transform.position = lootLocations[i];
-                                lootEffect.Play();
-
-                                GameObject spawnedLoot = Instantiate(weaponPickupPrefab, RoomSpawner.instance.getCurrentRoom().transform);
-                                spawnedLoot.GetComponent<Pickup>().item = items[i];
-                                //spawnedLoot.GetComponent<SpriteRenderer>().sprite = items[i].sprite;
-                                spawnedLoot.transform.position = lootLocations[i];
-                                spawnedLoot.SetActive(false);
-                                spawnedItems.Add(spawnedLoot);
-                            }
-
-                            StartCoroutine(Util.ExecuteAfterTime(0.05f, () =>
-                            {
-
-                                foreach (GameObject item in spawnedItems)
-                                {
-                                    item.SetActive(true);
-                                }
-
-                            }));
-
-                        }));
-
+                        GameObject lootObj = Instantiate(itemSpawnerPrefab, RoomSpawner.instance.getCurrentRoom().transform);
+                        lootObj.transform.position = transform.position;
+                        lootObj.GetComponent<ParticleItemSpawner>().items = items;
+                        lootObj.GetComponent<ParticleItemSpawner>().delay = 0.8f;
 
                         isClosed = false;
                     }
@@ -114,7 +89,6 @@ public class Chest : MonoBehaviour
 
                             PlayerManager.instance.gainGold(coinCount);
 
-                            
 
                         }));
                         isClosed = false;

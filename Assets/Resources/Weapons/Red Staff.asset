@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 073853bd71455564195f6c5fb0c293b1, type: 3}
+  m_Name: Red Staff
+  m_EditorClassIdentifier: 
+  id: weapon_red_magic_staff
+  name: Fire Staff
+  description: A wizards staff with burnt bits of wizards still stuck to it
+  itemType: 0
+  sprite: {fileID: 21300000, guid: adc1ffc4f26bf7b4ca2541cfd1918417, type: 3}
+  rarity: 2
+  type: 2
+  damage: 50
+  range: 0.62
+  knockback: 400
+  delay: 2.5
+  animationSpeed: 1
+  rotationSpeed: 12
+  throwSpeed: 8
+  chanceToBreak: 10
+  sharpness: 10
+  critChance: 10
+  sizeModifier: 1
+  collider: {fileID: 6315220545141827510, guid: 494749dd8b5615f42b32688d7bd29508,
+    type: 3}
+  projectile: {fileID: 2715084424186658869, guid: 4954c6fcc7369d84a9a091cc0c99d7c2,
+    type: 3}
+  projectileSprite: {fileID: 21300000, guid: d16598c8207bd794cb72bfbdef3ac669, type: 3}
+  numberToSpawn: 10
+  projectileDelay: 0
+  degreesAround: 360
+  projectileDamage: 25
+  FirePoint: 1

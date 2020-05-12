@@ -7,9 +7,19 @@ public class Constants
 
     //Chances
     public const int CHANCE_CHEST_HAS_COINS = 30;
-    public const int CHANCE_CHEST_HAS_WHITE = 80;
+    public const int CHANCE_CHEST_HAS_WHITE = 0;
+    public const int CHANCE_CHEST_HAS_GREEN = 70;
+    public const int CHANCE_CHEST_HAS_PURPLE = 85;
+    //public const int CHANCE_CHEST_HAS_COINS = 0;
+    //public const int CHANCE_CHEST_HAS_WHITE = 0;
+    //public const int CHANCE_CHEST_HAS_GREEN = 0;
+    //public const int CHANCE_CHEST_HAS_PURPLE = 100;
     public const int MAX_GREEN_ITEM_SPAWN = 4;
+    public const int MAX_PURPLE_ITEM_SPAWN = 3;
+    public const int MAX_LEGEND_ITEM_SPAWN = 1;
     public const int CHANCE_WEAPON_BREAKS = 33;
+
+    public const string PLAYER_DASH_ANIMATION = "IsDashing";
 
     //Folders
     public const string PREFABS_FOLDER = "Prefabs/";
@@ -61,6 +71,12 @@ public class Constants
     public const string SKELETON_ANIM = "IsSkeleton";
     public const string ORC_ANIM = "IsOrc";
     public const string LIZARD_F_ANIM = "IsLizard_f";
+    public const string ENEMY_FIRE_BOW = "FireBow";
+
+    //weapon types
+    public static List<WeaponType> rangedWeapons = new List<WeaponType> { WeaponType.BOW, WeaponType.STAFF };
+    public static List<WeaponType> sharpWeapons = new List<WeaponType> { WeaponType.SWORD };
+    public static List<WeaponType> bluntWeapons = new List<WeaponType> { WeaponType.BOW, WeaponType.STAFF, WeaponType.CLUB };
 
     //Weapon statnames - deprecated
     public const string PARAM_DAMAGE = "damage";
@@ -77,9 +93,13 @@ public class Constants
     {
         { EnemyType.MELEE, new List<WeaponType>{WeaponType.SWORD } },
         { EnemyType.ARCHER, new List<WeaponType>{WeaponType.BOW } },
-        { EnemyType.MAGE, new List<WeaponType>() }
+        { EnemyType.MAGE, new List<WeaponType>{ WeaponType.STAFF} }
     };
-    public const string ENEMY_FIRE_BOW = "FireBow";
 
+    //Sounds
+    public static string[] SWING_SOUNDS = new string[] { "swing_1", "swing_2", "swing_3" };
+    public static string CHEST_OPEN_SOUND = "open_chest";
+    public static string WEAPON_THUD = "thud_1";
+    public static string DASH_SOUND = "dash";
 
 }

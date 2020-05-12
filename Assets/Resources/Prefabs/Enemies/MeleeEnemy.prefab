@@ -481,7 +481,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.08377975, y: -0.05095935}
+  m_Offset: {x: 0.06879574, y: -0.06594348}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -492,7 +492,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.63747466, y: 0.8456197}
+  m_Size: {x: 0.5835322, y: 0.7677026}
   m_EdgeRadius: 0
 --- !u!114 &5525534323607751333
 MonoBehaviour:
@@ -552,6 +552,10 @@ MonoBehaviour:
   weaponRenderer: {fileID: 5525534323216280559}
   health: 100
   HurtPS: {fileID: 6762066000698448862, guid: 20456b8f9120f68449c8db5598b04b26, type: 3}
+  itemSpawnPrefab: {fileID: 4363346923048404918, guid: adb0ef79471f16642bf7864558d78b23,
+    type: 3}
+  damagePopupPrefab: {fileID: 7047611209311102841, guid: 02fc9cf77cc5c0847bdcee4f040fbceb,
+    type: 3}
   timeSinceLastHit: 0
   staggerTime: 0.8
   healthbar: {fileID: 6395189857946591082}
@@ -559,7 +563,6 @@ MonoBehaviour:
     type: 3}
   attackPos: {fileID: 5525534325115632281}
   enemyGridPosition: {x: 0, y: 0, z: 0}
-  type: 0
 --- !u!114 &5525534323607751329
 MonoBehaviour:
   m_ObjectHideFlags: 0

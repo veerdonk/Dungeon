@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56ed5c964a3200648852038d51a10455, type: 3}
+  m_Name: Axe
+  m_EditorClassIdentifier: 
+  id: weapon_axe
+  name: Axe
+  description: Woodcutters axe
+  itemType: 0
+  sprite: {fileID: 21300000, guid: c75304d263b0f9641b918bbd4143e63c, type: 3}
+  rarity: 0
+  type: 0
+  damage: 18
+  range: 5
+  knockback: 0
+  delay: 0.3
+  animationSpeed: 1
+  rotationSpeed: 20
+  throwSpeed: 15
+  chanceToBreak: 33
+  sharpness: 20
+  critChance: 15
+  sizeModifier: 1
+  collider: {fileID: 6998243311363078144, guid: 8b76154861ea2b64f9dd0445ee90aaab,
+    type: 3}

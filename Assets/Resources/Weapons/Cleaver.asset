@@ -21,8 +21,14 @@ MonoBehaviour:
   type: 0
   damage: 25
   range: 5
-  knockback: 600
+  knockback: 500
   delay: 0.5
   animationSpeed: 0.8
   rotationSpeed: 20
   throwSpeed: 15
+  chanceToBreak: 20
+  sharpness: 80
+  critChance: 10
+  sizeModifier: 1
+  collider: {fileID: 4258477062290102930, guid: e3e16bd924779d44f84a2c2858f85e1e,
+    type: 3}

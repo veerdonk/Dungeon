@@ -13,5 +13,9 @@ public class Weapon : Item
     public float animationSpeed = 1f;
     public float rotationSpeed = 20f;
     public float throwSpeed = 15f;
-
+    public float chanceToBreak = 33f;
+    public float sharpness = 50f;
+    public int critChance = 10;
+    public float sizeModifier = 1f;
+    public PolygonCollider2D collider;
 }

@@ -8,6 +8,8 @@ public class GameMenu : MonoBehaviour
     
     public void ReturnToMainMenu()
     {
+        Time.timeScale = 1;
+        Destroy(AudioManager.instance.gameObject);
         SceneManager.LoadScene("Menu");
     }
 

@@ -17,7 +17,7 @@ MonoBehaviour:
   description: A sturdy bow made out of metal
   itemType: 0
   sprite: {fileID: 21300000, guid: 43f9a950afcae074ea247914e3595c2f, type: 3}
-  rarity: 1
+  rarity: 2
   type: 1
   damage: 20
   range: 5
@@ -26,9 +26,17 @@ MonoBehaviour:
   animationSpeed: 1
   rotationSpeed: 20
   throwSpeed: 15
-  projectile: {fileID: 916608386554091130, guid: 2d547baa93a3504428397d1e67fda062,
+  chanceToBreak: 15
+  sharpness: 20
+  critChance: 10
+  sizeModifier: 1
+  collider: {fileID: 4712660659305306217, guid: 2f0f473a495171d44b21ba1ec8084535,
     type: 3}
+  projectile: {fileID: 916608386554091130, guid: 905e0978e1bc63d42977d66b11bfcfdd,
+    type: 3}
+  projectileSprite: {fileID: 21300000, guid: 9795a127d6620344bab69ee288ea05c5, type: 3}
   numberToSpawn: 5
   projectileDelay: 0
   degreesAround: 20
+  projectileDamage: 10
   FirePoint: 0

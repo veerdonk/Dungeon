@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 997e70304ca73c246ad71d30cede609a, type: 3}
+  m_Name: Metal Hit
+  m_EditorClassIdentifier: 
+  namePrefix: metal_hit_
+  clips:
+  - {fileID: 8300000, guid: 3c9e0b8428aba4745ac9b2fbfe07e8b7, type: 3}
+  - {fileID: 8300000, guid: ba44d0b8dbebf8c4ab3892f1198d2576, type: 3}
+  - {fileID: 8300000, guid: 58ff313c5cb77924a9697a29a012f625, type: 3}
+  - {fileID: 8300000, guid: 3b4d71f64c1df4644b45b351d30a8eb2, type: 3}
+  - {fileID: 8300000, guid: 3c1a62dca7922bf40b091aedc93f406f, type: 3}
+  volume: 0.05
+  volumeVariance: 0.1
+  pitch: 1
+  pitchVariance: 0.2
+  loop: 0
+  mixerGroup: {fileID: 7562855509951292379, guid: 941b4763c1aad7448829c49fafcfe0c9,
+    type: 2}
+  type: 1

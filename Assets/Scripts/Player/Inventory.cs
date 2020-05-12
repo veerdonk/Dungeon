@@ -18,8 +18,12 @@ public class Inventory : MonoBehaviour
     public Item[] allItemObjects;
     public List<Item> whiteItems;
     public List<Item> greenItems;
+    public List<Item> purpleItems;
+    public List<Item> legendaryItems;
 
     Dictionary<WeaponType, Dictionary<Rarity, List<Weapon>>> typeAndWeaponSelect = new Dictionary<WeaponType, Dictionary<Rarity, List<Weapon>>>();
+
+    public Dictionary<string, PolygonCollider2D> weaponsColliders = new Dictionary<string, PolygonCollider2D>();
 
     public int selectedSlot = 0;
 
@@ -62,11 +66,17 @@ public class Inventory : MonoBehaviour
         {
             switch (item.rarity)
             {
-                case Rarity.WHITE:
+                case Rarity.COMMON:
                     whiteItems.Add(item);
                     break;
-                case Rarity.GREEN:
+                case Rarity.RARE:
                     greenItems.Add(item);
+                    break;
+                case Rarity.EPIC:
+                    purpleItems.Add(item);
+                    break;
+                case Rarity.LEGENDARY:
+                    legendaryItems.Add(item);
                     break;
                 default:
                     break;
@@ -89,6 +99,16 @@ public class Inventory : MonoBehaviour
                 else
                 {
                     typeAndWeaponSelect[weapon.type] = new Dictionary<Rarity, List<Weapon>> { { weapon.rarity, new List<Weapon> { weapon } } };
+                }
+
+                if (weaponsColliders.ContainsKey(item.id))
+                {
+                    //Should not happen
+                    Debug.LogWarning("Multiple colliders for item with id: " + item.id);
+                }
+                else
+                {
+                    weaponsColliders[item.id] = weapon.collider;
                 }
             }
         }

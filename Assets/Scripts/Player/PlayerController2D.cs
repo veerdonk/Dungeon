@@ -29,6 +29,7 @@ public class PlayerController2D : MonoBehaviour
     private Vector2 dashDirection;
     private int childCountMinusWeapon;
 
+    private float footstepTime = .2f;
     public bool dead = false;
 
     Inventory inventory;
@@ -104,35 +105,13 @@ public class PlayerController2D : MonoBehaviour
         movementDirection.Normalize();
         animator.SetFloat("Speed", movementDirection.sqrMagnitude);
 
+        //Decrement timers
         timeTillNextDash -= Time.deltaTime;
+        footstepTime -= Time.deltaTime;
+
         if (Input.GetKeyDown(KeyCode.Space) && dashDirection == Vector2.zero && dashCharges > 0 && movementDirection.magnitude > 0)
         {
-            dashCharges--;
-            UIUpdater.instance.SetDashResetIndicator();
-            StartCoroutine(Util.ExecuteAfterTime(dashCooldown, () =>
-            {
-                dashCharges++;
-            }));
-
-            if (arrowContainer.transform.childCount > 0) {
-                ParticleSystem arrowParticles = Instantiate(arrowPS);
-                arrowParticles.textureSheetAnimation.SetSprite(0, arrowContainer.transform.GetChild(0).GetComponent<SpriteRenderer>().sprite);
-                arrowParticles.emission.SetBursts(new[] { new ParticleSystem.Burst(0, arrowContainer.transform.childCount) });
-                arrowParticles.transform.position = transform.position;
-                arrowParticles.Play();
-
-
-                foreach (Transform child in arrowContainer.transform)
-                {
-                    Destroy(child.gameObject);
-                }
-            }
-            ParticleSystem dashPSObj = Instantiate(dashPS);
-            dashPSObj.transform.position = transform.position;
-            CameraShake.instance.ShakeCamera();
-            isDashing = true;
-            timeTillNextDash = dashCooldown;
-            dashDirection = movementDirection;
+            PrepareDash();
         }
 
 
@@ -143,6 +122,8 @@ public class PlayerController2D : MonoBehaviour
             inventory.RemoveEquippedWeapon();
             //Play particle effect
             PlayThrowPS();
+            //Play sound
+            AudioManager.instance.PlayRandomFromNameList(Constants.SWING_SOUNDS);
         }
 
         if (Input.GetAxis("Mouse ScrollWheel") != 0f)
@@ -161,6 +142,47 @@ public class PlayerController2D : MonoBehaviour
         }
 
 
+    }
+
+    private void PrepareDash()
+    {
+        animator.SetTrigger(Constants.PLAYER_DASH_ANIMATION);
+        dashCharges--;
+        UIUpdater.instance.SetDashResetIndicator();
+        StartCoroutine(Util.ExecuteAfterTime(dashCooldown, () =>
+        {
+            dashCharges++;
+        }));
+
+        if (arrowContainer.transform.childCount > 0)
+        {
+            ParticleSystem arrowParticles = Instantiate(arrowPS, RoomSpawner.instance.getCurrentRoom().transform);
+            arrowParticles.textureSheetAnimation.SetSprite(0, arrowContainer.transform.GetChild(0).GetComponent<SpriteRenderer>().sprite);
+            arrowParticles.emission.SetBursts(new[] { new ParticleSystem.Burst(0, arrowContainer.transform.childCount) });
+            arrowParticles.transform.position = transform.position;
+            arrowParticles.Play();
+
+
+            foreach (Transform child in arrowContainer.transform)
+            {
+                Destroy(child.gameObject);
+            }
+        }
+        ParticleSystem dashPSObj = Instantiate(dashPS);
+        dashPSObj.transform.position = transform.position;
+        CameraShake.instance.ShakeCamera();
+        isDashing = true;
+        timeTillNextDash = dashCooldown;
+        dashDirection = movementDirection;
+
+        //Play a sound effect
+        AudioManager.instance.PlayOnce(Constants.DASH_SOUND);
+    }
+
+
+    void ResetMoveSpeed()
+    {
+        MOVEMENT_BASE_SPEED = 1.0f;
     }
 
     private void Dash()
@@ -183,6 +205,8 @@ public class PlayerController2D : MonoBehaviour
             dashDirection = Vector2.zero;
             dashTime = startDashTime;
             //rb.velocity = Vector2.zero;
+            MOVEMENT_BASE_SPEED += 0.7f;
+            Invoke("ResetMoveSpeed", 0.3f);
         }
         else
         {
@@ -208,6 +232,11 @@ public class PlayerController2D : MonoBehaviour
         CreateDust();
         rb.MovePosition(rb.position + movementDirection * movementSpeed * MOVEMENT_BASE_SPEED * Time.fixedDeltaTime);
         
+        if(footstepTime < 0)
+        {
+            AudioManager.instance.PlayRandomOfType(SoundType.FOOTSTEP_STONE);
+            footstepTime = .3f;
+        }
     }
 
     public void setPlayerPosition(Vector3 position)
@@ -231,5 +260,7 @@ public class PlayerController2D : MonoBehaviour
 public enum WeaponType
 {
     SWORD,
-    BOW
+    BOW,
+    STAFF,
+    CLUB
 }

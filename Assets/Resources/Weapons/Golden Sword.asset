@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56ed5c964a3200648852038d51a10455, type: 3}
+  m_Name: Golden Sword
+  m_EditorClassIdentifier: 
+  id: weapon_golden_sword
+  name: Golden Sword
+  description: A sword made of solid gold
+  itemType: 0
+  sprite: {fileID: 21300000, guid: 4f7735e5b8718704d83b3de63e911491, type: 3}
+  rarity: 3
+  type: 0
+  damage: 60
+  range: 5
+  knockback: 0
+  delay: 0.3
+  animationSpeed: 1
+  rotationSpeed: 30
+  throwSpeed: 20
+  chanceToBreak: 1
+  sharpness: 99
+  critChance: 50
+  sizeModifier: 0.8
+  collider: {fileID: 3223932914753386077, guid: a2be367d362207f4ea82a531ec62ccf2,
+    type: 3}

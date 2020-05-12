@@ -10,6 +10,7 @@ TagManager:
   - EntrancePoint
   - Wall
   - InventoryIcon
+  - Floor
   layers:
   - Default
   - TransparentFX
@@ -23,7 +24,7 @@ TagManager:
   - Enemies
   - Player
   - Weapons
-  - 
+  - Text
   - 
   - 
   - 

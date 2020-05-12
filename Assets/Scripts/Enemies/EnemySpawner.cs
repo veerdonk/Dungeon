@@ -67,16 +67,16 @@ public class EnemySpawner : MonoBehaviour
            
             if (chance < 70)
             {
-                enemyWeapon = Inventory.instance.getRandomWeaponOfTypeAndRarity(Util.getRandomWeaponTypeForEnemy(enemyToSpawn.type), Rarity.WHITE);
+                enemyWeapon = Inventory.instance.getRandomWeaponOfTypeAndRarity(Util.getRandomWeaponTypeForEnemy(enemyToSpawn.type), Rarity.COMMON);
             }
             else
             {
-                enemyWeapon = Inventory.instance.getRandomWeaponOfTypeAndRarity(Util.getRandomWeaponTypeForEnemy(enemyToSpawn.type), Rarity.GREEN);
+                enemyWeapon = Inventory.instance.getRandomWeaponOfTypeAndRarity(Util.getRandomWeaponTypeForEnemy(enemyToSpawn.type), Rarity.RARE);
             }
 
             if(enemyWeapon == null)
             {
-                enemyWeapon = Inventory.instance.getRandomWeaponOfTypeAndRarity(Util.getRandomWeaponTypeForEnemy(enemyToSpawn.type), Rarity.WHITE);
+                enemyWeapon = Inventory.instance.getRandomWeaponOfTypeAndRarity(Util.getRandomWeaponTypeForEnemy(enemyToSpawn.type), Rarity.COMMON);
             }
             //TODO add epic items here
             GameObject newEnemy = null;

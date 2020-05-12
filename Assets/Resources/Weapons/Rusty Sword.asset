@@ -26,3 +26,8 @@ MonoBehaviour:
   animationSpeed: 1
   rotationSpeed: 20
   throwSpeed: 15
+  chanceToBreak: 40
+  sharpness: 60
+  critChance: 10
+  sizeModifier: 1
+  collider: {fileID: 678993782004765767, guid: 33b386280de140c4ebee917ec9a63749, type: 3}

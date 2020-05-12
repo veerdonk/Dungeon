@@ -12,6 +12,10 @@ public class EnemyManager : HitManager
     public SpriteRenderer weaponRenderer;
     public int health = 100;
     public ParticleSystem HurtPS;
+    public GameObject itemSpawnPrefab;
+
+    [SerializeField]
+    private Transform damagePopupPrefab;
 
     Rigidbody2D rb;
 
@@ -26,6 +30,8 @@ public class EnemyManager : HitManager
     public event DeathDelegate onEnemyDeath;
 
     public Vector3 enemyGridPosition;
+
+    public Dictionary<Rarity, List<Item>> pickupsToDrop = new Dictionary<Rarity, List<Item>>();
 
     private void Start()
     {
@@ -66,30 +72,64 @@ public class EnemyManager : HitManager
 
     }
 
-    public override void TakeDamage(int damage, Vector2 attackerPos, float knockBack)
+    public override void TakeDamage(int damage, Vector2 attackerPos, float knockBack, bool isCrit)
     {
         PlayHurtPS();
         healthbar.gameObject.SetActive(true);
 
         health -= damage;
 
+        DisplayDamagePopUp(damage, isCrit);
+
         healthbar.SetHealth(health);
 
-        if(health <= 0)
+        //Play a sound
+        if (timeSinceLastHit < 0)
+        {
+            switch (enemy.race)
+            {
+                case EnemyRace.ORC:
+                    AudioManager.instance.PlayRandomOfType(SoundType.ORC_HURT);
+                     break;
+                case EnemyRace.SKELETON:
+                    AudioManager.instance.PlayRandomOfType(SoundType.SKELETON_HURT);
+                    break;
+                case EnemyRace.LIZARD_F:
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        //Die if health is too low
+        if (health <= 0)
         {
             Die();
         }
+
         //new Vector2((rb.position - attackerPos).normalized.x, 0)
         rb.AddForceAtPosition((rb.position - attackerPos).normalized * knockBack, attackerPos);
 
+
+
         //reset time since last hit
         timeSinceLastHit = staggerTime;
-
+        
+        //Falsh a red color
         gameObject.GetComponentInChildren<SpriteRenderer>().color = Color.red;
         StartCoroutine(WhiteColor());
 
+
+
     }
 
+    private void DisplayDamagePopUp(int damage, bool isCrit)
+    {
+        Transform popup = Instantiate(damagePopupPrefab, RoomSpawner.instance.getCurrentRoom().transform);
+        popup.GetComponent<DamagePopup>().damage = damage;
+        popup.GetComponent<DamagePopup>().isCrit = isCrit;
+        popup.position = transform.position;
+    }
 
     //Destroy gameobject
     //TODO play death animation/effect
@@ -99,8 +139,17 @@ public class EnemyManager : HitManager
         newWeapon.transform.position = transform.position;
         newWeapon.GetComponent<Pickup>().item = AAttack.weapon;
 
-        //TODO change values to actual gold/exp
+        //Quaternion zeroRot = newWeapon.transform.rotation;
+
         onEnemyDeath.Invoke(enemy.expValue, enemy.coinValue, this);
+
+        foreach (Rarity rarity in pickupsToDrop.Keys)
+        {
+            List<Item> itemsToSpawn = pickupsToDrop[rarity];
+            GameObject itemsObj = Instantiate(itemSpawnPrefab, RoomSpawner.instance.getCurrentRoom().transform);
+            itemsObj.transform.position = transform.position;
+            itemsObj.GetComponent<ParticleItemSpawner>().items = itemsToSpawn;
+        }
 
         ParticleSystem cs = Instantiate(coinSplosion);
         cs.transform.position = transform.position;

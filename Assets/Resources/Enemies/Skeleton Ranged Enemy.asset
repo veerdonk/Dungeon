@@ -15,7 +15,7 @@ MonoBehaviour:
   health: 150
   staggerTime: 0.3
   speed: 400
-  attackSpeedModifier: 1.5
+  attackSpeedModifier: 0.75
   damageModifier: 1.5
   followDistance: 6
   minDistance: 2

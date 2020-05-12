@@ -21,6 +21,8 @@ public class RoomSpawner : MonoBehaviour
     public Vector3 playerGridPosition;
     public GameObject chestPrefab;
     public GameObject weaponDropPrefab;
+    [SerializeField] private Transform shadowWallPrefab;
+    List<Transform> shadowWalls;
 
     private string direction;
     private RoomTemplates templates;
@@ -115,12 +117,6 @@ public class RoomSpawner : MonoBehaviour
                 }
             }
         }
-
-        //TODO: Check wether room to add exits to already existed and if it does
-        //Only add exits if that room has
-
-        //Pass floor tilemap to function that finds possible spawn tiles/coords
-        FindPossibleSpawnPoints(floor);      
         
         //Get a list of possible exits - the entrance
         List<string> tempExitCodes = exitCodes.ToList();
@@ -143,8 +139,8 @@ public class RoomSpawner : MonoBehaviour
             tempExitCodes.Remove(code);
         }
 
-        
 
+        shadowWalls = new List<Transform>();
         //Loop through the codes to add
         for (int i = 0; i < exitCodesToAdd.Count; i++)
         {
@@ -226,6 +222,10 @@ public class RoomSpawner : MonoBehaviour
 
         }
 
+        rooms[new Vector3(playerGridLocX, playerGridLocY)].walls = shadowWalls;
+        //Pass floor tilemap to function that finds possible spawn tiles/coords
+        FindPossibleSpawnPoints(floor);
+
     }
 
     private bool CheckGridLocationOffset(int offsetX, int offsetY)
@@ -262,6 +262,8 @@ public class RoomSpawner : MonoBehaviour
         //Set position of new corridor
         Vector3Int newPositionWall = new Vector3Int();
         Vector3Int newPositionFloor = new Vector3Int();
+        Vector3 wallPos = entranceToAdd.position;
+        float wallRotation = 0;
         switch (entranceToAdd.name)
         {
             case Constants.EXIT_LEFT:
@@ -272,6 +274,9 @@ public class RoomSpawner : MonoBehaviour
                 // 0 > 0?
                 newPositionWall.y = initialPosition.y + corridor.wallBounds.yMin;
                 newPositionFloor.y = initialPosition.y + corridor.floorBounds.yMin;
+                //wallPos.x -= 0.2f;
+                wallPos.y += 0.5f;
+                wallRotation -= 90;
                 break;
 
             case Constants.EXIT_RIGHT:
@@ -281,6 +286,9 @@ public class RoomSpawner : MonoBehaviour
                 //set Y position to smallest bounds y pos
                 newPositionWall.y = initialPosition.y + corridor.wallBounds.yMin;
                 newPositionFloor.y = initialPosition.y + corridor.floorBounds.yMin;
+                wallRotation += 90;
+                wallPos.x += 1f;
+                wallPos.y += 0.5f;
                 break;
 
             case Constants.EXIT_TOP:
@@ -301,6 +309,9 @@ public class RoomSpawner : MonoBehaviour
                     RemoveTile(walls, new Vector3Int(i, startY, 0));
                 }
 
+                wallPos.x += 0.5f;
+                wallPos.y += 0.2f;
+                wallRotation += 180;
                 break;
 
             case Constants.EXIT_BOT:
@@ -311,7 +322,9 @@ public class RoomSpawner : MonoBehaviour
                 //For this to work the 'opening' of the corridor has to be at -exaclty- Y=0
                 newPositionWall.y = initialPosition.y + corridor.wallBounds.yMin - 1;
                 newPositionFloor.y = initialPosition.y + corridor.floorBounds.yMin - 1;
-
+                //Lightly tweak position of wall
+                wallPos.x += 0.5f;
+                wallPos.y -= 1f;
                 break;
 
             default:
@@ -319,8 +332,14 @@ public class RoomSpawner : MonoBehaviour
                 break;
         }
 
+        
+
+        if (!isFirstRoom)
+        {
+            AddShadowWall(wallPos, wallRotation);
+        }
         //Debug.Log($"\nnew position wall = {newPositionWall}\n" +
-            //$"new position floor = {newPositionFloor}");
+        //$"new position floor = {newPositionFloor}");
         BoundsInt wallBounds = new BoundsInt(newPositionWall, corridor.wallBounds.size);
         BoundsInt floorBounds = new BoundsInt(newPositionFloor, corridor.floorBounds.size);
 
@@ -332,6 +351,30 @@ public class RoomSpawner : MonoBehaviour
         GameObject corTrigger = Instantiate(corridor.trigger, roomGrid[playerGridLocX][playerGridLocY].transform);
         corTrigger.transform.position = initialPosition + corridor.trigger.transform.position;//floorBounds.center +  corridor.trigger.transform.position;
 
+    }
+
+    void AddShadowWall(Vector3 position, float rotation)
+    {
+        Transform shadowWall = Instantiate(shadowWallPrefab, getCurrentRoom().transform);
+        shadowWall.position = position;
+        shadowWall.rotation = Quaternion.Euler(new Vector3(0, 0, rotation));
+        shadowWalls.Add(shadowWall);
+    }
+
+    public void EnableShadowWalls()
+    {
+        foreach (Transform shadowWall in shadowWalls)
+        {
+            shadowWall.GetComponent<ShadowTrigger>().EnableWall();
+        }
+    }
+
+    public void DisableShadowWalls()
+    {
+        foreach (Transform shadowWall in shadowWalls)
+        {
+            shadowWall.gameObject.SetActive(false);
+        }
     }
 
     //Checks whether room exists in collection and adds if it doesnt
@@ -403,6 +446,11 @@ public class RoomSpawner : MonoBehaviour
 
         //Disable old room
         roomGrid[playerGridLocX][playerGridLocY].SetActive(false);
+        //Disable old walls
+        foreach (Transform wall in rooms[new Vector3(playerGridLocX, playerGridLocY)].walls)
+        {
+            wall.GetComponent<ShadowTrigger>().DisableWall();
+        }
         Vector3 newPlayerPos = new Vector3();
 
         //Create new room in right direction
@@ -455,6 +503,10 @@ public class RoomSpawner : MonoBehaviour
                 //X/Y both exist -> enable existing room
                 addedRoom = roomGrid[playerGridLocX][playerGridLocY];
                 roomGrid[playerGridLocX][playerGridLocY].SetActive(true);
+                //foreach (Transform wall in rooms[new Vector3(playerGridLocX, playerGridLocY)].walls)
+                //{
+                //    wall.GetComponent<ShadowTrigger>().EnableWall();
+                //} 
             }
         }
         else
@@ -479,8 +531,10 @@ public class RoomSpawner : MonoBehaviour
         //Set player to right spot
         playerController.setPlayerPosition(newPlayerPos);
 
+        //Set direction to origin dir
+        direction = Constants.opositeEntrance[direction];
         //Once all exits have been added rescan the A* pathfinding
-        AstarPath.active.Scan();
+        //AstarPath.active.Scan();
     }
 
     //Used to determine viable spawnpoints
@@ -507,9 +561,9 @@ public class RoomSpawner : MonoBehaviour
                 //-1, 0, 1  1,1,1
                 //-1, 0, 1  0,0,0
                 //-1, 0, 1  -1-1-1
-                for (int lx = -1; lx < 2; lx++)
+                for (int lx = -2; lx < 3; lx++)
                 {
-                    for (int ly = -1; ly < 2; ly++)
+                    for (int ly = -2; ly < 3; ly++)
                     {
                         Vector3Int newPos = pos;
                         newPos.x += lx;
@@ -542,6 +596,7 @@ public class RoomSpawner : MonoBehaviour
         {
             //Once positions are known instruct enemyspawner to instantiate enemies
             EnemySpawner.instance.SpawnEnemies(allowedSpawnPoints, enemyParent, new Vector3(playerGridLocX, playerGridLocY, 0));
+            EnemySpawner.instance.OnAllEnemiesCleared += DisableShadowWalls;
         }
 
 
@@ -624,8 +679,9 @@ public class RoomSpawner : MonoBehaviour
                     items.Add(Inventory.instance.whiteItems[Random.Range(0, Inventory.instance.whiteItems.Count)]);
                 }
                 SpawnItemChest(items, lootPoint);
+                return;
             }
-            else
+            else if(chance < Constants.CHANCE_CHEST_HAS_GREEN)
             { 
                 //Spawn a chest with green items
                 for (int i = 0; i < Random.Range(1, Constants.MAX_GREEN_ITEM_SPAWN); i++)
@@ -634,10 +690,31 @@ public class RoomSpawner : MonoBehaviour
                     items.Add(Inventory.instance.greenItems[Random.Range(0, Inventory.instance.greenItems.Count)]);
                 }
                 SpawnItemChest(items, lootPoint);
+                return;
             }
+            else if(chance < Constants.CHANCE_CHEST_HAS_PURPLE)
+            {
+                //Spawn a chest with epic items
+                for (int i = 0; i < Random.Range(1, Constants.MAX_PURPLE_ITEM_SPAWN); i++)
+                {
 
+                    items.Add(Inventory.instance.purpleItems[Random.Range(0, Inventory.instance.purpleItems.Count)]);
+                }
+                SpawnItemChest(items, lootPoint);
+                return;
+            }
+            else
+            {
+                //Spawn a chest with legendary items
+                for (int i = 0; i < Random.Range(1, Constants.MAX_LEGEND_ITEM_SPAWN); i++)
+                {
 
-            
+                    items.Add(Inventory.instance.legendaryItems[Random.Range(0, Inventory.instance.legendaryItems.Count)]);
+                }
+                SpawnItemChest(items, lootPoint);
+                return;
+            }
+ 
 
         }
         

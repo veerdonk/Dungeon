@@ -5707,7 +5707,7 @@ ParticleSystem:
     rateOverTime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 25
+      scalar: 0
       minScalar: 10
       maxCurve:
         serializedVersion: 2
@@ -9730,7 +9730,7 @@ Animator:
   m_Controller: {fileID: 9100000, guid: 1fbcaf1d89c78da428aa3706fad262ec, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
-  m_ApplyRootMotion: 0
+  m_ApplyRootMotion: 1
   m_LinearVelocityBlending: 0
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
@@ -9759,9 +9759,9 @@ MonoBehaviour:
   movementSpeed: 5
   arrowContainer: {fileID: 3220089807567070472}
   maxDashCharges: 3
-  dashCharges: 2
-  dashSpeed: 15
-  startDashTime: 0.3
+  dashCharges: 3
+  dashSpeed: 17
+  startDashTime: 0.2
   dashCooldown: 2
   isDashing: 0
   dead: 0

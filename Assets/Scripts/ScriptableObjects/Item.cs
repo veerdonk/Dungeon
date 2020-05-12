@@ -53,6 +53,8 @@ public enum ItemType
 
 public enum Rarity
 {
-    WHITE,
-    GREEN
+    COMMON,
+    RARE,
+    EPIC,
+    LEGENDARY
 }

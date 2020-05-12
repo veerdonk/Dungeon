@@ -70,7 +70,7 @@ public class PlayerManager : HitManager
         }));
     }
 
-    public override void TakeDamage(int damage, Vector2 attackerPos, float knockBack)
+    public override void TakeDamage(int damage, Vector2 attackerPos, float knockBack, bool isCrit)
     {
         if (!PlayerController2D.instance.isDashing)
         {

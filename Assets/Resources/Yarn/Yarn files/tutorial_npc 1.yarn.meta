@@ -1,0 +1,28 @@
+fileFormatVersion: 2
+guid: 9fd6ead2ab0ec5946951859053e12ac6
+ScriptedImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 2
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+  script: {fileID: 11500000, guid: 94073015eacc34c1d8fc6786e43d60ca, type: 3}
+  baseLanguageID: en
+  stringIDs:
+  - tutorial_npc 1-Start-0
+  - tutorial_npc 1-Start-1
+  - tutorial_npc 1-Start-2
+  - tutorial_npc 1-tutorial-3
+  - tutorial_npc 1-tutorial-4
+  - tutorial_npc 1-tutorial-5
+  - tutorial_npc 1-tutorial-6
+  - tutorial_npc 1-tutorial-7
+  - tutorial_npc 1-tutorial-8
+  - tutorial_npc 1-havefun-9
+  compilationStatus: 1
+  isSuccesfullyCompiled: 1
+  compilationErrorMessage: 
+  baseLanguage: {fileID: 7128917941130120860, guid: 9fd6ead2ab0ec5946951859053e12ac6,
+    type: 3}
+  localizations: []

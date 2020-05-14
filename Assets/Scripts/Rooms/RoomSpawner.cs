@@ -38,6 +38,9 @@ public class RoomSpawner : MonoBehaviour
 
     Transform enemyParent;
 
+    [SerializeField] private NPCSpawner npcSpawner;
+
+
     private void Awake()
     {
         if(instance != null)
@@ -73,7 +76,7 @@ public class RoomSpawner : MonoBehaviour
 
         //Register event for roomclear
         EnemySpawner.instance.OnAllEnemiesCleared += SpawnLoot;
-      
+
         
     }
 
@@ -590,6 +593,9 @@ public class RoomSpawner : MonoBehaviour
         {
             //Spawn some a chest w/ weapons to start with
             SpawnLoot();
+            //also spawn a tutorial npc
+            npcSpawner.SpawnNPC("Tutorial", allowedSpawnPoints[Random.Range(0, allowedSpawnPoints.Count)]);
+
             isFirstRoom = false;
         }
         else

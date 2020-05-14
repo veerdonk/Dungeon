@@ -1,0 +1,62 @@
+[
+	{
+		"title": "Start",
+		"tags": "",
+		"body": "Hi, is this the first time you're playing this game?\n[[ answer: yes|tutorial]] \n[[ answer: no|havefun]]",
+		"position": {
+			"x": 341,
+			"y": 365
+		},
+		"colorID": 1
+	},
+	{
+		"title": "Node",
+		"tags": "",
+		"body": "To dash use the SPACEBAR [[Answer:Node_2|Node_2]]",
+		"position": {
+			"x": 801,
+			"y": 338
+		},
+		"colorID": 0
+	},
+	{
+		"title": "Node_2",
+		"tags": "",
+		"body": "To open your inventory press I and to switch items between your inventory and hotbar click them [[Answer:Node_3|Node_3]]",
+		"position": {
+			"x": 1116,
+			"y": 340
+		},
+		"colorID": 0
+	},
+	{
+		"title": "Node_3",
+		"tags": "",
+		"body": "Finally, to attack press the left mouse button",
+		"position": {
+			"x": 1426,
+			"y": 342
+		},
+		"colorID": 0
+	},
+	{
+		"title": "tutorial",
+		"tags": "",
+		"body": "To move around use the WASD keys [[Answer:Node|Node]]",
+		"position": {
+			"x": 580,
+			"y": 87
+		},
+		"colorID": 0
+	},
+	{
+		"title": "havefun",
+		"tags": "",
+		"body": "Have fun!",
+		"position": {
+			"x": 628,
+			"y": 637
+		},
+		"colorID": 0
+	}
+]

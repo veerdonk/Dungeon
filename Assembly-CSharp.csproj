@@ -63,6 +63,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\DialogueAccessor.cs" />
     <Compile Include="Assets\Particle Attractor by Moonflower Carnivore\Scripts\particleAttractorLinear.cs" />
     <Compile Include="Assets\Particle Attractor by Moonflower Carnivore\Scripts\particleAttractorMove.cs" />
     <Compile Include="Assets\Particle Attractor by Moonflower Carnivore\Scripts\particleAttractorSelf.cs" />
@@ -84,6 +85,7 @@
     <Compile Include="Assets\Scripts\Rooms\Corridor.cs" />
     <Compile Include="Assets\Scripts\Rooms\CorridorTrigger.cs" />
     <Compile Include="Assets\Scripts\Rooms\Entrance.cs" />
+    <Compile Include="Assets\Scripts\Rooms\NPCSpawner.cs" />
     <Compile Include="Assets\Scripts\Rooms\ParticleItemSpawner.cs" />
     <Compile Include="Assets\Scripts\Rooms\Room.cs" />
     <Compile Include="Assets\Scripts\Rooms\RoomSpawner.cs" />
@@ -113,6 +115,7 @@
     <Compile Include="Assets\Scripts\Weapons\Projectile.cs" />
     <Compile Include="Assets\Scripts\Weapons\RangedAttack.cs" />
     <Compile Include="Assets\Scripts\Weapons\Throw.cs" />
+    <Compile Include="Assets\npcCharacter.cs" />
     <None Include="Assets\TextMesh Pro\Resources\Shaders\TMPro.cginc" />
     <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_SDF-Mobile Overlay.shader" />
     <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_Bitmap.shader" />
@@ -439,6 +442,36 @@
     </Reference>
     <Reference Include="Pathfinding.Ionic.Zip.Reduced">
       <HintPath>D:/unity/projects/Dungeon/Assets/AstarPathfindingProject/Plugins/DotNetZip/Pathfinding.Ionic.Zip.Reduced.dll</HintPath>
+    </Reference>
+    <Reference Include="Antlr4.Runtime.Standard">
+      <HintPath>D:/unity/projects/Dungeon/Assets/YarnSpinner/Scripts/DLLs/Antlr4.Runtime.Standard.dll</HintPath>
+    </Reference>
+    <Reference Include="CsvHelper">
+      <HintPath>D:/unity/projects/Dungeon/Assets/YarnSpinner/Scripts/DLLs/CsvHelper.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Protobuf">
+      <HintPath>D:/unity/projects/Dungeon/Assets/YarnSpinner/Scripts/DLLs/Google.Protobuf.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Buffers">
+      <HintPath>D:/unity/projects/Dungeon/Assets/YarnSpinner/Scripts/DLLs/System.Buffers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Memory">
+      <HintPath>D:/unity/projects/Dungeon/Assets/YarnSpinner/Scripts/DLLs/System.Memory.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Numerics.Vectors">
+      <HintPath>D:/unity/projects/Dungeon/Assets/YarnSpinner/Scripts/DLLs/System.Numerics.Vectors.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reflection.TypeExtensions">
+      <HintPath>D:/unity/projects/Dungeon/Assets/YarnSpinner/Scripts/DLLs/System.Reflection.TypeExtensions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe">
+      <HintPath>D:/unity/projects/Dungeon/Assets/YarnSpinner/Scripts/DLLs/System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
+    <Reference Include="YarnSpinner.Compiler">
+      <HintPath>D:/unity/projects/Dungeon/Assets/YarnSpinner/Scripts/DLLs/YarnSpinner.Compiler.dll</HintPath>
+    </Reference>
+    <Reference Include="YarnSpinner">
+      <HintPath>D:/unity/projects/Dungeon/Assets/YarnSpinner/Scripts/DLLs/YarnSpinner.dll</HintPath>
     </Reference>
     <Reference Include="netstandard">
       <HintPath>D:/unity/2019.3.7f1/Editor/Data/NetStandard/ref/2.0.0/netstandard.dll</HintPath>
@@ -787,9 +820,17 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="YarnSpinner.Unity.Example.csproj">
+      <Project>{2B45405A-24ED-38A9-35F0-9DB58A565186}</Project>
+      <Name>YarnSpinner.Unity.Example</Name>
+    </ProjectReference>
     <ProjectReference Include="AstarPathfindingProject.csproj">
       <Project>{DB0A4C43-B85D-C6CD-79ED-42C23838B633}</Project>
       <Name>AstarPathfindingProject</Name>
+    </ProjectReference>
+    <ProjectReference Include="YarnSpinner.Unity.Editor.csproj">
+      <Project>{78EC64B6-44E1-45C3-DFBE-B7F348D1901C}</Project>
+      <Name>YarnSpinner.Unity.Editor</Name>
     </ProjectReference>
     <ProjectReference Include="PackageToolsEditor.csproj">
       <Project>{ED8A4508-239C-8293-413B-BDA7B86491A0}</Project>
@@ -798,6 +839,10 @@
     <ProjectReference Include="AstarPathfindingProjectEditor.csproj">
       <Project>{2ACDCFEB-8030-6203-9559-2DC7D82F6AF5}</Project>
       <Name>AstarPathfindingProjectEditor</Name>
+    </ProjectReference>
+    <ProjectReference Include="YarnSpinner.Unity.csproj">
+      <Project>{695C085B-8245-0F91-21B6-D9DFFFAD16F0}</Project>
+      <Name>YarnSpinner.Unity</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

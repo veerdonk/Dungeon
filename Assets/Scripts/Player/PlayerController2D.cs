@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Runtime.CompilerServices;
+using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class PlayerController2D : MonoBehaviour
@@ -31,6 +32,7 @@ public class PlayerController2D : MonoBehaviour
 
     private float footstepTime = .2f;
     public bool dead = false;
+    public bool allowedToProcess = true;
 
     Inventory inventory;
 
@@ -53,8 +55,10 @@ public class PlayerController2D : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
-        ProcessInputs();
+        if (allowedToProcess)
+        {
+            ProcessInputs();
+        }
 
     }
 
@@ -252,6 +256,12 @@ public class PlayerController2D : MonoBehaviour
     private bool IsMouseOverUI()
     {
         return EventSystem.current.IsPointerOverGameObject();
+    }
+
+
+    public void SetIsAllowedToProcess(bool allowed)
+    {
+        allowedToProcess = allowed;
     }
 
 }

@@ -1,0 +1,29 @@
+title: Tutorial
+tags: 
+colorID: 1
+position: 216,337
+---
+Hi, is this the first time you're playing this game?
+[[ yes|tutorial]] 
+[[ no|havefun]]
+===
+title: tutorial
+tags: 
+colorID: 0
+position: 624,332
+---
+To move around use the WASD keys 
+To dash use the SPACEBAR
+To open your inventory press I..
+to switch items between your inventory and hotbar click them
+Finally, to attack press the left mouse button
+[[ Thanks! |havefun]]
+[[ What?! |tutorial]]
+===
+title: havefun
+tags: 
+colorID: 0
+position: 628,637
+---
+Have fun!
+===

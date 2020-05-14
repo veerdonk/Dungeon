@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Arrow : Projectile
 {
+    [SerializeField] TrailRenderer trailRenderer;
+
     protected override void HandleCollision(Collider2D other)
     {
         transform.position = transform.position + direction * Random.Range(0.3f, 0.45f);
@@ -19,7 +21,7 @@ public class Arrow : Projectile
             transform.SetParent(other.transform);
         }
         isFlying = false;
-
+        trailRenderer.enabled = false;
         if (other.CompareTag(Constants.PLAYER_TAG) || other.CompareTag(Constants.ENEMY_TAG))
         {
             if (damage == null)

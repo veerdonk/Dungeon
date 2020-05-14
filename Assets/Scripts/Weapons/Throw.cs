@@ -110,20 +110,10 @@ public class Throw : MonoBehaviour
 
             if (other.CompareTag(Constants.ENEMY_TAG))
             {
+                bool destroyObj = false;
 
 
 
-                if (!enemiesHurt.Contains(other.transform.gameObject))
-                {
-                    int damageTodo = weapon.damage;
-                    bool isCrit = false;
-                    if (Util.CheckChance(weapon.critChance))
-                    {
-                        damageTodo *= 2;
-                        isCrit = true;
-                    }
-                    other.GetComponent<HitManager>().TakeDamage(damageTodo, throwOrigin, weapon.knockback, isCrit);
-                }
 
                 if (Constants.rangedWeapons.Contains(weapon.type))
                 {
@@ -176,7 +166,7 @@ public class Throw : MonoBehaviour
                         pickup.transform.position = transform.position;
                         
                     }
-                    Destroy(gameObject);
+                    destroyObj = true;
 
                 }
                 else
@@ -185,6 +175,24 @@ public class Throw : MonoBehaviour
                     AudioManager.instance.PlayRandomOfType(SoundType.METAL_HIT);
                 }
 
+                //Finally hurt the enemy
+                if (!enemiesHurt.Contains(other.transform.gameObject))
+                {
+                    int damageTodo = weapon.damage;
+                    bool isCrit = false;
+                    if (Util.CheckChance(weapon.critChance))
+                    {
+                        damageTodo *= 2;
+                        isCrit = true;
+                    }
+                    other.GetComponent<HitManager>().TakeDamage(damageTodo, throwOrigin, weapon.knockback, isCrit);
+                }
+
+
+                if (destroyObj)
+                {
+                    Destroy(gameObject);
+                }
             }
             else if (other.CompareTag("Wall"))
             {

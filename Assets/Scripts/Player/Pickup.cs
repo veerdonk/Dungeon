@@ -40,6 +40,24 @@ public class Pickup : MonoBehaviour
                 AudioManager.instance.PlayRandomOfType(SoundType.PICKUP);
                 Destroy(gameObject);
             }
+
+            if (transform.parent != null)
+            {
+                if (transform.parent.CompareTag(Constants.ENEMY_TAG))
+                {
+                    //Remove from list of weapons stuck
+                    EnemyManager em = transform.parent.GetComponent<EnemyManager>();
+                    Debug.Log(em);
+                    foreach (Rarity rar in em.pickupsToDrop.Keys)
+                    {
+                        if (em.pickupsToDrop[rar].Contains(item))
+                        {
+                            em.pickupsToDrop[rar].Remove(item);
+                            break;
+                        }
+                    }
+                }
+            }
         }
         
     }

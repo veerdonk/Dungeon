@@ -59,6 +59,11 @@ public class PlayerController2D : MonoBehaviour
         {
             ProcessInputs();
         }
+        else
+        {
+            movementDirection = Vector2.zero;
+            animator.SetFloat("Speed", 0.0f);
+        }
 
     }
 

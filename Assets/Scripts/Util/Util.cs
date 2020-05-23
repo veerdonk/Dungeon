@@ -10,9 +10,7 @@ public class Util : MonoBehaviour
     //https://answers.unity.com/questions/796881/c-how-can-i-let-something-happen-after-a-small-del.html
     public static IEnumerator ExecuteAfterTime(float time, Action task)
     {
-        Debug.Log($"Waiting for {time} seconds");
         yield return new WaitForSeconds(time);
-        Debug.Log("Executing task");
         task();
     }
 

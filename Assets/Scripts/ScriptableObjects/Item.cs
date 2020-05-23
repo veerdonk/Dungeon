@@ -48,7 +48,8 @@ public enum ItemType
 {
     WEAPON,
     POTION,
-    MATERIAL
+    MATERIAL,
+    ARMOR
 }
 
 public enum Rarity

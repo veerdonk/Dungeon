@@ -19,10 +19,15 @@ public abstract class Projectile : MonoBehaviour
 
     private void Start()
     {
+        PlaySoundEffect();
         float rotZ = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
         transform.rotation = Quaternion.Euler(0f, 0f, rotZ);
         GetComponent<SpriteRenderer>().sprite = weapon.projectileSprite;
+        
     }
+
+    abstract public void PlaySoundEffect();
+
 
     void FixedUpdate()
     {

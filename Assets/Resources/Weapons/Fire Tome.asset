@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 073853bd71455564195f6c5fb0c293b1, type: 3}
+  m_Name: Fire Tome
+  m_EditorClassIdentifier: 
+  id: weapon_fire_tome
+  name: Fiery Tome
+  description: A book containing the secrets of fire
+  itemType: 0
+  sprite: {fileID: 21300000, guid: 7ab78f17e30a42148b43d6290b7003b4, type: 3}
+  rarity: 2
+  type: 4
+  damage: 5
+  range: 0.6
+  knockback: 300
+  delay: 0.3
+  animationSpeed: 1
+  rotationSpeed: 10
+  throwSpeed: 5
+  chanceToBreak: 2
+  sharpness: 0
+  critChance: 20
+  sizeModifier: 1
+  collider: {fileID: 678993782004765767, guid: 8248bef1e954da84a9d8c49dbb9233c9, type: 3}
+  projectile: {fileID: 2715084424186658869, guid: 4954c6fcc7369d84a9a091cc0c99d7c2,
+    type: 3}
+  numberToSpawn: 1
+  projectileDelay: 0.2
+  degreesAround: 40
+  projectileDamage: 40
+  FirePoint: 2
+  projectileSprite: {fileID: 21300000, guid: d16598c8207bd794cb72bfbdef3ac669, type: 3}

@@ -1,15 +1,14 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class Constants
 {
 
     //Chances
-    public const int CHANCE_CHEST_HAS_COINS = 30;
+    public const int CHANCE_CHEST_HAS_COINS = 10;
     public const int CHANCE_CHEST_HAS_WHITE = 0;
-    public const int CHANCE_CHEST_HAS_GREEN = 70;
-    public const int CHANCE_CHEST_HAS_PURPLE = 85;
+    public const int CHANCE_CHEST_HAS_GREEN = 50;
+    public const int CHANCE_CHEST_HAS_PURPLE = 80;
     //public const int CHANCE_CHEST_HAS_COINS = 0;
     //public const int CHANCE_CHEST_HAS_WHITE = 0;
     //public const int CHANCE_CHEST_HAS_GREEN = 0;
@@ -30,8 +29,11 @@ public class Constants
     public const string ITEMS_FOLDER_FULL = SPRITES_FOLDER + "Items/";
     public const string PICKUP_SUFFIX = "_pickup";
     public const string ROOMS_FOLDER = "Rooms/";
+    public const string DUNGEON_ROOMS_FOLDER = ROOMS_FOLDER + "Dungeon";
+    public const string GRASS_ROOMS_FOLDER = ROOMS_FOLDER + "Grass";
     public const string ROOM_TEMPLATES_FOLDER = PREFABS_FOLDER + ROOMS_FOLDER + "Room_templates/";
-    public const string CORRIDORS_FOLDER = ROOM_TEMPLATES_FOLDER + "Corridors/";
+    public const string DUNGEON_CORRIDORS_FOLDER = ROOM_TEMPLATES_FOLDER + "Corridors/Dungeon";
+    public const string GRASS_CORRIDORS_FOLDER = ROOM_TEMPLATES_FOLDER + "Corridors/Grass";
     public const string ENEMY_PATH = "ENEMIES/";
 
     //Controls
@@ -71,10 +73,12 @@ public class Constants
     public const string SKELETON_ANIM = "IsSkeleton";
     public const string ORC_ANIM = "IsOrc";
     public const string LIZARD_F_ANIM = "IsLizard_f";
+    public const string ATTACK_ANIM = "Attack";
+    public const string SLIME_ANIM = "IsSlime";
     public const string ENEMY_FIRE_BOW = "FireBow";
 
     //weapon types
-    public static List<WeaponType> rangedWeapons = new List<WeaponType> { WeaponType.BOW, WeaponType.STAFF };
+    public static List<WeaponType> rangedWeapons = new List<WeaponType> { WeaponType.BOW, WeaponType.STAFF, WeaponType.TOME };
     public static List<WeaponType> sharpWeapons = new List<WeaponType> { WeaponType.SWORD };
     public static List<WeaponType> bluntWeapons = new List<WeaponType> { WeaponType.BOW, WeaponType.STAFF, WeaponType.CLUB };
 
@@ -101,5 +105,19 @@ public class Constants
     public static string CHEST_OPEN_SOUND = "open_chest";
     public static string WEAPON_THUD = "thud_1";
     public static string DASH_SOUND = "dash";
+    public static string FIREBALL = "fireball";
+    public static string FIREBALL_EXPLOSION = "fireball_explosion";
 
+    //Biomes
+    public static Dictionary<Biome, string> biomeToResource = new Dictionary<Biome, string>()
+    {
+        { Biome.DUNGEON, Constants.ROOM_TEMPLATES_FOLDER  + Constants.DUNGEON_ROOMS_FOLDER},
+        { Biome.GRASS,  Constants.ROOM_TEMPLATES_FOLDER + Constants.GRASS_ROOMS_FOLDER}
+    };
+
+    public static Dictionary<Biome, string> biomeToCorridor = new Dictionary<Biome, string>()
+    {
+        { Biome.DUNGEON, Constants.DUNGEON_CORRIDORS_FOLDER},
+        { Biome.GRASS, Constants.GRASS_CORRIDORS_FOLDER }
+    };
 }

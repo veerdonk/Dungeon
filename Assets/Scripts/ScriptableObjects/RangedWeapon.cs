@@ -6,12 +6,13 @@ using UnityEngine;
 public class RangedWeapon : Weapon
 {
     public GameObject projectile;
-    public Sprite projectileSprite;
+    
     public int numberToSpawn;
     public float projectileDelay;
     public float degreesAround;
     public int projectileDamage = 10;
     public FirePoint FirePoint;
+    [HideInInspector]public Sprite projectileSprite;
 }
 
 public enum FirePoint

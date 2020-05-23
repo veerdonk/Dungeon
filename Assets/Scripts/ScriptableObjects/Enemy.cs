@@ -26,12 +26,14 @@ public enum EnemyRace
 {
     ORC,
     SKELETON,
-    LIZARD_F
+    LIZARD_F,
+    SLIME
 }
 
 public enum EnemyType
 {
     MELEE,
     ARCHER,
-    MAGE
+    MAGE,
+    UNARMED
 }

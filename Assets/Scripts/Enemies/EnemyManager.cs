@@ -32,6 +32,7 @@ public class EnemyManager : HitManager
     public Vector3 enemyGridPosition;
 
     public Dictionary<Rarity, List<Item>> pickupsToDrop = new Dictionary<Rarity, List<Item>>();
+    bool dead = false;
 
     private void Start()
     {
@@ -49,6 +50,9 @@ public class EnemyManager : HitManager
             case EnemyRace.LIZARD_F:
                 enemyAnimator.SetTrigger(Constants.LIZARD_F_ANIM);
                 break;
+            case EnemyRace.SLIME:
+                enemyAnimator.SetTrigger(Constants.SLIME_ANIM);
+                break;
             default:
                 break;
         }
@@ -56,7 +60,11 @@ public class EnemyManager : HitManager
         transform.localScale = transform.localScale * enemy.sizeModifier;
 
         rb = gameObject.GetComponent<Rigidbody2D>();
-        weaponRenderer.sprite = AAttack.weapon.sprite;
+
+        if (enemy.type != EnemyType.UNARMED)
+        {
+            weaponRenderer.sprite = AAttack.weapon.sprite;
+        }
         healthbar.SetMaxHealth(health);
         healthbar.SetHealth(health);
 
@@ -102,7 +110,7 @@ public class EnemyManager : HitManager
         }
 
         //Die if health is too low
-        if (health <= 0)
+        if (health <= 0 && !dead)
         {
             Die();
         }
@@ -135,13 +143,18 @@ public class EnemyManager : HitManager
     //TODO play death animation/effect
     private void Die()
     {
-        GameObject newWeapon = (GameObject)Instantiate(Resources.Load(Constants.PREFABS_FOLDER + Constants.PICKUPS_FOLDER + "weapon_pickup"), transform.parent.parent);
-        newWeapon.transform.position = transform.position;
-        newWeapon.GetComponent<Pickup>().item = AAttack.weapon;
-
-        //Quaternion zeroRot = newWeapon.transform.rotation;
-
-        onEnemyDeath.Invoke(enemy.expValue, enemy.coinValue, this);
+        dead = true;
+        if (enemy.type != EnemyType.UNARMED)
+        {
+            if (pickupsToDrop.ContainsKey(AAttack.weapon.rarity))
+            {
+                pickupsToDrop[AAttack.weapon.rarity].Add(AAttack.weapon);
+            }
+            else
+            {
+                pickupsToDrop[AAttack.weapon.rarity] = new List<Item> { AAttack.weapon };
+            }
+        }
 
         foreach (Rarity rarity in pickupsToDrop.Keys)
         {
@@ -151,6 +164,7 @@ public class EnemyManager : HitManager
             itemsObj.GetComponent<ParticleItemSpawner>().items = itemsToSpawn;
         }
 
+        onEnemyDeath.Invoke(enemy.expValue, enemy.coinValue, this);
         ParticleSystem cs = Instantiate(coinSplosion);
         cs.transform.position = transform.position;
         cs.emission.SetBursts(new[] { new ParticleSystem.Burst(0, enemy.coinValue) });

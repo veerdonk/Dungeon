@@ -13,6 +13,8 @@ public class UIUpdater : MonoBehaviour
     public Text levelUpText;
     public GameObject gameOver;
 
+    public ParticleSystem healthLossPS;
+
     public Image[] dashResfresh;
 
     public bool displayLevelUp;

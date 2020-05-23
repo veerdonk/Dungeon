@@ -13,11 +13,6 @@ public class CorridorTrigger : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            //TODO remove
-            //PlayerController2D pc = other.gameObject.GetComponent<PlayerController2D>();
-
-
-            Debug.Log("Corridor trigger touched by player");
             rs.UpdatePlayerLocationAndSpawnRoom(gameObject);
         }
     }

@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dacc0a763fcca3b4787d276f159d5233, type: 3}
+  m_Name: Steel Chestplate
+  m_EditorClassIdentifier: 
+  id: armor_steel_chest
+  name: Steel breastplate
+  description: A breastplate made of forged steel
+  itemType: 3
+  sprite: {fileID: 21300000, guid: d61055a19b88e714f8c5a6c072e65d50, type: 3}
+  rarity: 2
+  armorPart: 1
+  color: {r: 1, g: 1, b: 1, a: 1}
+  sprites:
+  - {fileID: 21300000, guid: 8a5fee2fab183c6408c5349e299ea1be, type: 3}
+  - {fileID: 21300000, guid: d61055a19b88e714f8c5a6c072e65d50, type: 3}
+  - {fileID: 21300000, guid: 0dc3d0d4430f53c44b5298742bc4623e, type: 3}
+  - {fileID: 21300000, guid: bcf3ca89829ba924bb0f92e0e9843cf7, type: 3}
+  - {fileID: 21300000, guid: 4b354c9fb35e52a498988ae69cce6d66, type: 3}
+  - {fileID: 21300000, guid: f18f353aac2553242b5b3c897dc4ddb9, type: 3}
+  - {fileID: 21300000, guid: 8f55243ded0bd704195c9ead524cd1fb, type: 3}
+  - {fileID: 21300000, guid: ea369f5923b5a974981256810043a71a, type: 3}
+  - {fileID: 21300000, guid: 73efe45d4a6f4f941a3f5d52a2b7dd46, type: 3}
+  defense: 8
+  effect: 0
+  equipped: 1

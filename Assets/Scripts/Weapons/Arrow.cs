@@ -6,6 +6,11 @@ public class Arrow : Projectile
 {
     [SerializeField] TrailRenderer trailRenderer;
 
+    public override void PlaySoundEffect()
+    {
+       //Dont play a sound
+    }
+
     protected override void HandleCollision(Collider2D other)
     {
         transform.position = transform.position + direction * Random.Range(0.3f, 0.45f);

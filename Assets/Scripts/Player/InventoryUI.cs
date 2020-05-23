@@ -7,6 +7,8 @@ public class InventoryUI : MonoBehaviour
     public GameObject inventoryUI;
     public Transform slotsPanel;
     public Transform weaponPanel;
+    public InventorySlot headArmorSlot;
+    public InventorySlot torsoArmorSlot;
     Inventory inventory;
     public GameObject currentEquippedWeapon;
     public GameObject weaponPrefab;
@@ -18,6 +20,8 @@ public class InventoryUI : MonoBehaviour
         inventory = Inventory.instance;
         inventory.onItemChangedCallback += UpdateUI;
         inventory.onHotbarChangedCallback += UpdateHotbarUI;
+        inventory.onHeadArmorChangedCallback += UpdateHeadArmorSlot;
+        inventory.onTorsoArmorChangedCallback += UpdateTorsoArmorSlot;
     }
 
     private void Update()
@@ -51,6 +55,37 @@ public class InventoryUI : MonoBehaviour
 
     }
 
+
+    void UpdateHeadArmorSlot()
+    {
+        if (inventory.headArmorSlot != null)
+        {
+            headArmorSlot.AddItem(inventory.headArmorSlot, 1, false, SlotType.ARMOR_HEAD);
+            ArmorSwitcher.instance.headArmor = (ArmorPiece)inventory.headArmorSlot;
+            ArmorSwitcher.instance.headArmor.equipped = true;
+        }
+        else
+        {
+            headArmorSlot.ClearSlot();
+            ArmorSwitcher.instance.headArmor.equipped = false;
+        }
+    }
+
+    void UpdateTorsoArmorSlot()
+    {
+        if (inventory.torsoArmorSlot != null)
+        {
+            torsoArmorSlot.AddItem(inventory.torsoArmorSlot, 1, false, SlotType.ARMOR_TORSO);
+            ArmorSwitcher.instance.torsoArmor = (ArmorPiece)inventory.torsoArmorSlot;
+            ArmorSwitcher.instance.torsoArmor.equipped = true;
+        }
+        else
+        {
+            torsoArmorSlot.ClearSlot();
+            ArmorSwitcher.instance.torsoArmor.equipped = false;
+        }
+    }
+
     void UpdateUI()
     {
         
@@ -67,8 +102,6 @@ public class InventoryUI : MonoBehaviour
                 itemSlots[i].ClearSlot();
             }
         }
-
-
     }
 
     //IMPROVEMENT -> get item/weapon pooling

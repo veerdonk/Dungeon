@@ -22,10 +22,6 @@ public class Entrance : MonoBehaviour
 
         if (other.CompareTag("Player"))
         {
-            ////Find this rooms coordinates
-            //int parentX = gameObject.transform.parent.parent.GetComponent<Room>().roomX;
-            //int parentY = gameObject.transform.parent.parent.GetComponent<Room>().roomY;
-
             //Set a flag with the current direction
             rs.setDirectionFlag(gameObject.name);
         }

@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dacc0a763fcca3b4787d276f159d5233, type: 3}
+  m_Name: Copper Helmet
+  m_EditorClassIdentifier: 
+  id: armor_copper_helmet
+  name: Copper Helmet
+  description: A rough helmet made aout of copper
+  itemType: 3
+  sprite: {fileID: 21300000, guid: 7e528cd51cfba7b4e99b0459f077bda1, type: 3}
+  rarity: 1
+  armorPart: 0
+  color: {r: 0.6886792, g: 0.28575903, b: 0, a: 1}
+  sprites:
+  - {fileID: 21300000, guid: 9c22e0eef92914743a701a97e314b944, type: 3}
+  - {fileID: 21300000, guid: 7e528cd51cfba7b4e99b0459f077bda1, type: 3}
+  - {fileID: 21300000, guid: 4b1a0d9987098114f8a90993e68fd499, type: 3}
+  - {fileID: 21300000, guid: 57999eddad2897544843a7af416a69fe, type: 3}
+  - {fileID: 21300000, guid: abe1680145f8f4f48a406e0437872444, type: 3}
+  - {fileID: 21300000, guid: 021224e43f3c938498726c9c3222f897, type: 3}
+  - {fileID: 21300000, guid: dc15dde5fe3b2b34080ebe3ca601ae25, type: 3}
+  - {fileID: 21300000, guid: f9e83edceb952f947bc4b36a9448cb8e, type: 3}
+  - {fileID: 21300000, guid: 2f6657998c03e1c4d8b23e5cde0ef54b, type: 3}
+  defense: 3
+  effect: 0
+  equipped: 1

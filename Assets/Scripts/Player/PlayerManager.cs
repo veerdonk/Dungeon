@@ -26,6 +26,10 @@ public class PlayerManager : HitManager
     public delegate void LevelIncreased(int level);
     public event LevelIncreased OnLevelIncrease;
 
+    //Modifying stats
+    public float defence = 0;
+
+
     private void Awake()
     {
         if (instance != null)
@@ -82,9 +86,14 @@ public class PlayerManager : HitManager
 
             }
 
+            //Reduce damage by defence
+            damage = (int)(damage - ArmorSwitcher.instance.totalArmor);
+            if(damage < 0)
+            {
+                damage = 0;
+            }
             health -= damage;
             OnPlayerStatChange.Invoke();
-
             animator.SetTrigger("isHit");
             CameraShake.instance.ShakeCamera();
         }
@@ -120,8 +129,9 @@ public class PlayerManager : HitManager
         //Calculate next value better
         playerLevel++;
         exp = 0;
+        maxHealth = (int)(maxHealth * 1.1f);
         health = maxHealth;
-        expForNextLvl = (int)(expForNextLvl * 1.1);
+        expForNextLvl = (int)(expForNextLvl * 1.25);
         levelPS.Play();
         UIUpdater.instance.displayLevelUp = true;
         OnPlayerStatChange.Invoke();

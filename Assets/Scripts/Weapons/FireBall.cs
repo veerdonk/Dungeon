@@ -6,10 +6,20 @@ public class FireBall : Projectile
 {
     public Animator animator;
     public LayerMask layer;
+
+    public override void PlaySoundEffect()
+    {
+        //Play a sound effect on creation
+        AudioManager.instance.PlayRandomOfType(SoundType.FIREBALL);
+    }
+
     protected override void HandleCollision(Collider2D other)
     {
         //Handle collision
+        //set animator trigger
         animator.SetTrigger("Explode");
+        //Play a sound effect
+        AudioManager.instance.PlayOnce(Constants.FIREBALL_EXPLOSION);
         Destroy(gameObject, animator.GetCurrentAnimatorStateInfo(0).length);
         isFlying = false;
 

@@ -7,6 +7,7 @@ public class EnemySpawner : MonoBehaviour
     public static EnemySpawner instance;
     public GameObject enemyPrefab;
     public GameObject rangedEnemyPrefab;
+    public GameObject unarmedEnemyPrefab;
 
     //TODO biomes?
     public Enemy[] enemyData;
@@ -59,37 +60,47 @@ public class EnemySpawner : MonoBehaviour
             Enemy enemyToSpawn = enemiesToSelectFrom[Random.Range(0, enemiesToSelectFrom.Count)];
             //Substract cost for this enemy
             currentCredits -= enemyToSpawn.creditCost;
-
-            //Choose what rarity weapon the enemy will have
-            //0-70 = white, 70-90 = green 90-100 = epic
-            int chance = Random.Range(0, 100);
-            Weapon enemyWeapon;
-           
-            if (chance < 70)
+            GameObject newEnemy = null;
+            if (enemyToSpawn.type != EnemyType.UNARMED)
             {
-                enemyWeapon = Inventory.instance.getRandomWeaponOfTypeAndRarity(Util.getRandomWeaponTypeForEnemy(enemyToSpawn.type), Rarity.COMMON);
+
+                //Choose what rarity weapon the enemy will have
+                //0-70 = white, 70-90 = green 90-100 = epic
+                int chance = Random.Range(0, 100);
+                Weapon enemyWeapon;
+
+                if (chance < 70)
+                {
+                    enemyWeapon = Inventory.instance.getRandomWeaponOfTypeAndRarity(Util.getRandomWeaponTypeForEnemy(enemyToSpawn.type), Rarity.COMMON);
+                }
+                else
+                {
+                    enemyWeapon = Inventory.instance.getRandomWeaponOfTypeAndRarity(Util.getRandomWeaponTypeForEnemy(enemyToSpawn.type), Rarity.RARE);
+                }
+
+                if (enemyWeapon == null)
+                {
+                    enemyWeapon = Inventory.instance.getRandomWeaponOfTypeAndRarity(Util.getRandomWeaponTypeForEnemy(enemyToSpawn.type), Rarity.COMMON);
+                }
+
+                //TODO add epic items here
+               
+                switch (enemyWeapon.type)
+                {
+                    case WeaponType.BOW:
+                        newEnemy = Instantiate(rangedEnemyPrefab, parent);
+                        break;
+                    case WeaponType.SWORD:
+                        newEnemy = Instantiate(enemyPrefab, parent);
+                        break;
+                    default:
+                        break;
+                }
+                newEnemy.GetComponentInChildren<AbstractAttack>().weapon = enemyWeapon;
             }
             else
             {
-                enemyWeapon = Inventory.instance.getRandomWeaponOfTypeAndRarity(Util.getRandomWeaponTypeForEnemy(enemyToSpawn.type), Rarity.RARE);
-            }
-
-            if(enemyWeapon == null)
-            {
-                enemyWeapon = Inventory.instance.getRandomWeaponOfTypeAndRarity(Util.getRandomWeaponTypeForEnemy(enemyToSpawn.type), Rarity.COMMON);
-            }
-            //TODO add epic items here
-            GameObject newEnemy = null;
-            switch (enemyWeapon.type)
-            {
-                case WeaponType.BOW:
-                    newEnemy = Instantiate(rangedEnemyPrefab, parent);
-                    break;
-                case WeaponType.SWORD:
-                    newEnemy = Instantiate(enemyPrefab, parent);
-                    break;
-                default:
-                    break;
+                newEnemy = Instantiate(unarmedEnemyPrefab, parent);
             }
             EnemyManager em = newEnemy.GetComponent<EnemyManager>();
             em.enemy = enemyToSpawn;
@@ -99,7 +110,7 @@ public class EnemySpawner : MonoBehaviour
 
             newEnemy.transform.position = pos;
             //Set the enemies grid position
-            newEnemy.GetComponentInChildren<AbstractAttack>().weapon = enemyWeapon;
+            
             if (enemies.ContainsKey(gridPosition))
             {
                 enemies[gridPosition].Add(em);
@@ -123,14 +134,14 @@ public class EnemySpawner : MonoBehaviour
 
 
         //TODO select enemytype/weapontype
-        Debug.Log($"Spawning {numberOfEnemiesToSpawn} enemies");
+        //Debug.Log($"Spawning {numberOfEnemiesToSpawn} enemies");
 
-        for (int i = 0; i < numberOfEnemiesToSpawn + Random.Range(-1, 2); i++)
-        {
+        //for (int i = 0; i < numberOfEnemiesToSpawn + Random.Range(-1, 2); i++)
+        //{
 
 
 
-        }
+        //}
 
     }
 

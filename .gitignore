@@ -17,7 +17,7 @@ sysinfo.txt
 # Old builds
 ###
 Builds/OLD*
-
+demos/*
 
 ###
 # VS/MD solution and project files

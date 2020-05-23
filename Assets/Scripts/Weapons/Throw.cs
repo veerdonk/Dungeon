@@ -24,6 +24,8 @@ public class Throw : MonoBehaviour
     float throwRotation;
     Vector3 throwOrigin;
 
+    private float timeSinceLastProjectile = 0;
+    private float degToFireIn = 0;
     List<GameObject> enemiesHurt = new List<GameObject>();
 
     // Start is called before the first frame update
@@ -74,8 +76,25 @@ public class Throw : MonoBehaviour
             //Make sure weapon rotates in right direction
             transform.position = transform.position + throwPosition.normalized * weapon.throwSpeed * Time.deltaTime;
 
-            //.GetChild(0)
-            transform.GetChild(0).rotation = Quaternion.Euler(0f, 0f, throwRotation); ;
+            transform.GetChild(0).rotation = Quaternion.Euler(0f, 0f, throwRotation);
+
+            if (Constants.rangedWeapons.Contains(weapon.type))
+            {
+                RangedWeapon weap = (RangedWeapon)weapon;
+                if(weap.FirePoint == FirePoint.ONFLY)
+                {
+                    if (timeSinceLastProjectile <= 0)
+                    {
+                        //Spawn projectile here
+                        SpawnProjectileInDirection(weap, transform.position, degToFireIn, null);
+                        degToFireIn -= weap.degreesAround;
+                        timeSinceLastProjectile = weap.projectileDelay;
+                    }
+                }
+            }
+
+            timeSinceLastProjectile -= Time.deltaTime;
+
         }
     }
 
@@ -216,6 +235,23 @@ public class Throw : MonoBehaviour
         }
     }
 
+    private void SpawnProjectileInDirection(RangedWeapon rangedWeapon, Vector3 position, float directionDegrees, GameObject ignore)
+    {
+        //Spawn projectile
+        GameObject projectileObject = Instantiate(rangedWeapon.projectile);
+        Projectile projectile = projectileObject.GetComponent<Projectile>();
+        projectile.speed = rangedWeapon.throwSpeed + 2;
+        projectile.transform.position = position;
+        Vector3 newPos = Quaternion.AngleAxis(directionDegrees, Vector3.forward) * throwPosition;
+        Vector2 heading = newPos;
+        float distance = heading.magnitude;
+        projectile.damage = rangedWeapon.projectileDamage;
+        projectile.direction = heading / distance;
+        projectile.weapon = rangedWeapon;
+        projectile.weapon.throwSpeed = rangedWeapon.throwSpeed;
+        projectile.shooter = PlayerManager.instance.gameObject;
+        projectile.ignore = ignore;
+    }
 
     private void SpawnProjectiles(RangedWeapon rangedWeapon, Vector3 position, GameObject ignore)
     {

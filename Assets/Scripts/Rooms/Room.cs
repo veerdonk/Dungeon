@@ -8,6 +8,7 @@ public class Room
     public Vector3 gridPosition;
     public bool hasNeighbours;
     public List<string> exits = new List<string>();
+    public List<Transform> entrancePositions = new List<Transform>();
     public List<Vector3> possibleSpawnPoints;
     public List<Transform> walls;
 

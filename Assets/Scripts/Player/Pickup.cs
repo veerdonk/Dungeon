@@ -17,6 +17,12 @@ public class Pickup : MonoBehaviour
             Weapon weap = (Weapon)item;
             transform.localScale = transform.localScale * weap.sizeModifier;
         }
+
+        if(item.itemType == ItemType.ARMOR)
+        {
+            ArmorPiece ap = (ArmorPiece)item;
+            gameObject.GetComponent<SpriteRenderer>().color = ap.color;
+        }
     }
 
     public void SetStatic(bool isStatic)

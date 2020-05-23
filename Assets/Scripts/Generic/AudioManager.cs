@@ -95,5 +95,6 @@ public enum SoundType
 	SKELETON_HURT,
 	PICKUP,
 	ITEM_DROP,
-	DASH
+	DASH,
+	FIREBALL
 }

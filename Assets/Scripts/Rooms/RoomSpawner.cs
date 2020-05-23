@@ -34,11 +34,17 @@ public class RoomSpawner : MonoBehaviour
     bool isFirstRoom = true;
 
     //TODO refactor to dictionary?
+    private Dictionary<Biome, List<Corridor>> allCorridors = new Dictionary<Biome, List<Corridor>>();
     private List<Corridor> corridors = new List<Corridor>();
 
     Transform enemyParent;
 
     [SerializeField] private NPCSpawner npcSpawner;
+
+    public Biome currentBiome = Biome.DUNGEON;
+    private GameObject[] biomeRooms;
+    public delegate void BiomeSwitch(Biome biome);
+    public event BiomeSwitch OnBiomeSwitch;
 
 
     private void Awake()
@@ -56,28 +62,28 @@ public class RoomSpawner : MonoBehaviour
         //Retrieve player controller to move player with
         playerController = PlayerController2D.instance;
 
-        //Initialize corridors
-        GameObject[] corridorTemplates = Resources.LoadAll<GameObject>(Constants.CORRIDORS_FOLDER);
-        foreach (GameObject corr in corridorTemplates)
-        {
-            corridors.Add(new Corridor(corr));
-        }
-
-
-        Debug.Log("Spawning corridors");
-
         //Possible room templates
         templates = GetComponent<RoomTemplates>();
+        switch (currentBiome)
+        {
+            case Biome.GRASS:
+                biomeRooms = templates.grassRooms;
+                break;
+            case Biome.DUNGEON:
+                biomeRooms = templates.dungeonRooms;
+                break;
+            default:
+                break;
+        }
 
         //Add first/start room 
-        AddRoom(templates.rooms[0]);
+        AddRoom(templates.roomsPerBiome[currentBiome].rooms[0]);
 
         AddExits(gameObject.transform.GetChild(0));
 
         //Register event for roomclear
         EnemySpawner.instance.OnAllEnemiesCleared += SpawnLoot;
 
-        
     }
 
     public GameObject getCurrentRoom()
@@ -148,7 +154,8 @@ public class RoomSpawner : MonoBehaviour
         for (int i = 0; i < exitCodesToAdd.Count; i++)
         {
             //Get the corridor with the right direction
-            foreach (Corridor cor in corridors)
+            
+            foreach (Corridor cor in templates.roomsPerBiome[currentBiome].corridors)
             {
                 if (cor.hasDirection(exitCodesToAdd[i])) {
                     Debug.Log($"Corridor selected for code'{exitCodesToAdd[i]}' = '{cor.name}'");
@@ -226,6 +233,7 @@ public class RoomSpawner : MonoBehaviour
         }
 
         rooms[new Vector3(playerGridLocX, playerGridLocY)].walls = shadowWalls;
+        rooms[new Vector3(playerGridLocX, playerGridLocY)].entrancePositions = possibleEntrances;
         //Pass floor tilemap to function that finds possible spawn tiles/coords
         FindPossibleSpawnPoints(floor);
 
@@ -462,29 +470,35 @@ public class RoomSpawner : MonoBehaviour
 
         GameObject roomToAdd;
 
+
+        //TODO refactor to use rooms from right biome
         switch (direction)
         {
             case Constants.EXIT_TOP:
                 playerGridLocY++;
                 playerYOfsset = -2;
-                roomToAdd = templates.Brooms[Random.Range(0, templates.Brooms.Count)];
+                roomToAdd = templates.roomsPerBiome[currentBiome].Brooms[Random.Range(0, templates.roomsPerBiome[currentBiome].Brooms.Count)];
+                //roomToAdd = templates.dungeonBrooms[Random.Range(0, templates.dungeonBrooms.Count)];
                 break;
 
             case Constants.EXIT_BOT:
                 playerGridLocY--;
                 playerYOfsset = 2;
-                roomToAdd = templates.Trooms[Random.Range(0, templates.Trooms.Count)];
+                roomToAdd = templates.roomsPerBiome[currentBiome].Trooms[Random.Range(0, templates.roomsPerBiome[currentBiome].Trooms.Count)];
+                //roomToAdd = templates.dungeonTrooms[Random.Range(0, templates.dungeonTrooms.Count)];
                 break;
             case Constants.EXIT_RIGHT:
                 playerGridLocX++;
                 playerXOfsset = -2;
-                roomToAdd = templates.Lrooms[Random.Range(0, templates.Lrooms.Count)];
+                roomToAdd = templates.roomsPerBiome[currentBiome].Lrooms[Random.Range(0, templates.roomsPerBiome[currentBiome].Lrooms.Count)];
+                //roomToAdd = templates.dungeonLrooms[Random.Range(0, templates.dungeonLrooms.Count)];
                 break;
 
             case Constants.EXIT_LEFT:
                 playerGridLocX--;
                 playerXOfsset = 2;
-                roomToAdd = templates.Rrooms[Random.Range(0, templates.Rrooms.Count)];
+                roomToAdd = templates.roomsPerBiome[currentBiome].Rrooms[Random.Range(0, templates.roomsPerBiome[currentBiome].Rrooms.Count)];
+                //roomToAdd = templates.dungeonRrooms[Random.Range(0, templates.dungeonRrooms.Count)];
                 break;
 
             default:
@@ -505,17 +519,14 @@ public class RoomSpawner : MonoBehaviour
             {
                 //X/Y both exist -> enable existing room
                 addedRoom = roomGrid[playerGridLocX][playerGridLocY];
+                possibleEntrances = rooms[new Vector3(playerGridLocX, playerGridLocY)].entrancePositions;
                 roomGrid[playerGridLocX][playerGridLocY].SetActive(true);
-                //foreach (Transform wall in rooms[new Vector3(playerGridLocX, playerGridLocY)].walls)
-                //{
-                //    wall.GetComponent<ShadowTrigger>().EnableWall();
-                //} 
             }
         }
         else
         {
             //X/Y do not exist
-            addedRoom = AddRoom(templates.rooms[Random.Range(0, templates.rooms.Length)]);
+            addedRoom = AddRoom(templates.dungeonRooms[Random.Range(0, templates.dungeonRooms.Length)]);
             AddExits(addedRoom.transform);
         }
 
@@ -523,6 +534,7 @@ public class RoomSpawner : MonoBehaviour
         {
             if (entrance.name == Constants.opositeEntrance[direction])
             {
+                Debug.Log($"Opposite entrance = {entrance.name}, position = {entrance.position}");
                 newPlayerPos = entrance.position;
                 break;
             }
@@ -744,5 +756,18 @@ public class RoomSpawner : MonoBehaviour
         chest.items = itemNames;
     }
 
+    //Update the current biome and fire event
+    public void SwitchBiome(Biome biome)
+    {
+        currentBiome = biome;
+        OnBiomeSwitch.Invoke(biome);
+    }
+
 }
 
+
+public enum Biome
+{
+    GRASS,
+    DUNGEON
+}

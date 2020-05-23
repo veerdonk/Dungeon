@@ -4,9 +4,9 @@ using UnityEngine.Experimental.U2D.Animation;
 public class ShadowTrigger : MonoBehaviour
 {
 
-    [SerializeField] SpriteRenderer renderer;
-    [SerializeField] Animator animator;
-    [SerializeField] GameObject collider;
+    [SerializeField] new SpriteRenderer renderer;
+    [SerializeField] new Animator animator;
+    [SerializeField] new GameObject collider;
 
     private void OnTriggerExit2D(Collider2D other)
     {

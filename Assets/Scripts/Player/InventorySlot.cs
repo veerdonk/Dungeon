@@ -13,6 +13,8 @@ public class InventorySlot : MonoBehaviour
     public Image itemContainerImage;
     public bool isSelectedSlot;
 
+    private bool resetRot = false;
+
     private void Awake()
     {
         //Start out with empty slots
@@ -27,12 +29,41 @@ public class InventorySlot : MonoBehaviour
         icon.enabled = true;
         this.slotType = slotType;
         numbers.text = number.ToString();
-        numbers.enabled = true;
+        
+        if(newItem.itemType == ItemType.ARMOR)
+        {
+            ArmorPiece ap = (ArmorPiece)newItem;
+            icon.color = ap.color;
+            ResetRot();
+        }
+
+        if (newItem.itemType == ItemType.WEAPON)
+        {
+            Weapon weap = (Weapon)newItem;
+            if(weap.type == WeaponType.TOME)
+            {
+                ResetRot();
+            }
+        }
+
+        if (newItem.itemType != ItemType.ARMOR)
+        {
+            numbers.enabled = true;
+        }
         if (displayRemove)
         {
             removeButton.interactable = true;
         }
     }
+
+    void ResetRot()
+    {
+        icon.transform.eulerAngles = new Vector3(0, 0, 0);
+        resetRot = true;
+        icon.preserveAspect = true;
+        icon.transform.localScale = new Vector3(1, 1, 1);
+    }
+
 
     public void SetSelected()
     {
@@ -53,8 +84,16 @@ public class InventorySlot : MonoBehaviour
 
     public void ClearSlot()
     {
+        
+        if (resetRot)
+        {
+            icon.transform.eulerAngles = new Vector3(0, 0, -45);
+            resetRot = false;
+            icon.transform.localScale = new Vector3(0.5f, 0.5f, 1);
+        }
         item = null;
         icon.sprite = null;
+        icon.color = Color.white;
         icon.enabled = false;
         numbers.enabled = false;
         itemButton.interactable = false;
@@ -79,5 +118,7 @@ public class InventorySlot : MonoBehaviour
 public enum SlotType
 {
     INVENTORY,
-    HOTBAR
+    HOTBAR,
+    ARMOR_HEAD,
+    ARMOR_TORSO
 }

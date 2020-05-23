@@ -179,6 +179,7 @@ public class PlayerController2D : MonoBehaviour
         }
         ParticleSystem dashPSObj = Instantiate(dashPS);
         dashPSObj.transform.position = transform.position;
+        dashPSObj.Play();
         CameraShake.instance.ShakeCamera();
         isDashing = true;
         timeTillNextDash = dashCooldown;
@@ -277,5 +278,6 @@ public enum WeaponType
     SWORD,
     BOW,
     STAFF,
-    CLUB
+    CLUB,
+    TOME
 }

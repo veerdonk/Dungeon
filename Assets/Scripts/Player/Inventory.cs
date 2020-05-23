@@ -14,6 +14,8 @@ public class Inventory : MonoBehaviour
 
     public Item[] inventoryItemPositions = new Item[numInvSlots];
     public Item[] hotbarItemPositions = new Item[numHotbarSlots];
+    public Item headArmorSlot = null;
+    public Item torsoArmorSlot = null;
 
     public Item[] allItemObjects;
     public List<Item> whiteItems;
@@ -35,6 +37,12 @@ public class Inventory : MonoBehaviour
 
     public delegate void OnHotbarChanged();
     public OnHotbarChanged onHotbarChangedCallback;
+
+    public delegate void OnHeadArmorChanged();
+    public OnHotbarChanged onHeadArmorChangedCallback;
+
+    public delegate void OnTorsoArmorChanged();
+    public OnHotbarChanged onTorsoArmorChangedCallback;
 
     public InventoryUI inventoryUI;
 
@@ -126,6 +134,32 @@ public class Inventory : MonoBehaviour
         return null;
     }
 
+    public bool HotBarHasSpecificItem(Item item)
+    {
+        for (int i = 0; i < hotbarItemPositions.Length; i++)
+        {
+            if (hotbarItemPositions[i] == item)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public bool InventoryHasSpecificItem(Item item)
+    {
+        for (int i = 0; i < inventoryItemPositions.Length; i++)
+        {
+            if (inventoryItemPositions[i] == item)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public bool HotbarContainsItem()
     {
         bool hasItem = false;
@@ -135,6 +169,25 @@ public class Inventory : MonoBehaviour
             {
                 //Second check because setting to null doesnt always work
                 if (hotbarItemPositions[i].name != null)
+                {
+                    hasItem = true;
+                    break;
+                }
+            }
+        }
+
+        return hasItem;
+    }
+
+    public bool InventoryContainsItem()
+    {
+        bool hasItem = false;
+        for (int i = 0; i < inventoryItemPositions.Length; i++)
+        {
+            if (inventoryItemPositions[i] != null)
+            {
+                //Second check because setting to null doesnt always work
+                if (inventoryItemPositions[i].name != null)
                 {
                     hasItem = true;
                     break;
@@ -169,6 +222,10 @@ public class Inventory : MonoBehaviour
             //Make hotbar UI and slots update
             HotbarCallback();
         }
+        else
+        {
+            selectedSlot = 0;
+        }
     }
 
     public bool AddToInventory(Item itemToAdd)
@@ -181,7 +238,6 @@ public class Inventory : MonoBehaviour
         {
             number = 1;
         }
-
         if (items.ContainsKey(itemToAdd))
         {
             items[itemToAdd] += (int)number;
@@ -199,7 +255,6 @@ public class Inventory : MonoBehaviour
                     break;
                 }
             }
-
         }
         else
         {
@@ -261,6 +316,12 @@ public class Inventory : MonoBehaviour
         {
             case ItemType.WEAPON:
 
+                if (InventoryHasSpecificItem(itemToAdd))
+                {
+                    return AddToInventory(itemToAdd);
+                }
+                
+
                 if (!AddToHotbar(itemToAdd))
                 {
                     return AddToInventory(itemToAdd);
@@ -270,6 +331,7 @@ public class Inventory : MonoBehaviour
                     return true;
                 }
 
+            case ItemType.ARMOR:
             case ItemType.POTION:
             case ItemType.MATERIAL:
                 return AddToInventory(itemToAdd);
@@ -283,10 +345,37 @@ public class Inventory : MonoBehaviour
 
     public void switchBars(Item itemToSwitch, int number, SlotType type, bool isActiveItem)
     {
-
         switch (type)
         {
             case SlotType.INVENTORY:
+
+                if(itemToSwitch.itemType == ItemType.ARMOR)
+                {
+                    ArmorPiece armor = (ArmorPiece)itemToSwitch;
+                    switch (armor.armorPart)
+                    {
+                        case ArmorPart.HEAD:
+                            if(headArmorSlot == null)
+                            {
+                                headArmorSlot = armor;
+                                onHeadArmorChangedCallback.Invoke();
+                                RemoveAllInInventory(itemToSwitch);
+                            }
+                            break;
+                        case ArmorPart.TORSO:
+                            if (torsoArmorSlot == null)
+                            {
+                                torsoArmorSlot = armor;
+                                onTorsoArmorChangedCallback.Invoke();
+                                RemoveAllInInventory(itemToSwitch);
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                    break;
+                }
+
                 if (AddToHotbar(itemToSwitch, number))
                 {
                     RemoveAllInInventory(itemToSwitch);
@@ -299,11 +388,26 @@ public class Inventory : MonoBehaviour
                     RemoveAllInHotbar(itemToSwitch);
                 }
                 return;
+            case SlotType.ARMOR_HEAD:
+                if (AddToInventory(itemToSwitch, 0))
+                {
+                    headArmorSlot = null;
+                    onHeadArmorChangedCallback.Invoke();
+                }
+                return;
+
+            case SlotType.ARMOR_TORSO:
+                if (AddToInventory(itemToSwitch, 0))
+                {
+                    torsoArmorSlot = null;
+                    onTorsoArmorChangedCallback.Invoke();
+                }
+                return;
+
             default:
                 Debug.LogWarning($"No behaviour for SlotType: {type}");
                 break;
         }
-
     }
 
 
@@ -320,8 +424,6 @@ public class Inventory : MonoBehaviour
             items[item]--;
             InventoryCallback();
         }
-
-
     }
 
     public void RemoveAllInInventory(Item item)

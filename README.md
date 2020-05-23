@@ -1,6 +1,18 @@
 # Dungeon
 ## Version 0.1.5 Alpha ready
 ### New Features
+
+#### Version 0.1.7
+- Prepared biomes
+- Fixed room transitions (again)
+- Tweaked numbers
+
+#### Version 0.1.6
+- Added armour
+- Added more weapons
+- More enemies
+
+#### Version 0.1.5
 - Dialogue system
 - Added tutorial
 - Added macos support
